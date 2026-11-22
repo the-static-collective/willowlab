@@ -16,3 +16,14 @@ html{scroll-behavior:smooth}body{margin:0;background:var(--sand);color:var(--ink
 @media(max-width:1080px){.layout{grid-template-columns:220px 1fr}.right-column{grid-column:2;grid-template-columns:repeat(2,minmax(0,1fr))}.right-column .side-panel:last-child{grid-column:1/-1}.mast-graphic{display:none}.masthead{grid-template-columns:55px 1fr}.mast-copy{max-width:700px}}
 @media(max-width:720px){.wrap{width:min(100% - 24px,620px)}.masthead{display:block;padding:35px 0}.mast-symbol{margin-bottom:15px;width:44px;height:44px;font-size:30px}.mast-copy h1{font-size:43px}.mast-copy>p:not(.kicker){font-size:15px}.layout{display:block}.sidebar,.main-column,.right-column{margin-bottom:14px}.sidebar{margin-bottom:14px}.main-column,.right-column{display:grid;gap:14px}.right-column .side-panel:last-child{grid-column:auto}.panel{padding:17px}.home-tabs{display:flex;overflow:auto;padding:2px}.home-tab{flex:0 0 155px}.item{flex-wrap:wrap}.foot{display:block}.foot span{display:block;margin-bottom:6px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+/* The MEMENTO aperture is a compact, source-scoped local preview. */
+.memento-panel{border-color:#8aab9e}
+.memento-file-label{display:block;font-size:12px;font-weight:700;margin:14px 0 5px}
+.memento-preview{max-height:340px;overflow:auto;font-size:12px;padding:6px 0}
+.memento-preview h4{font-size:12px;margin:14px 0 5px}
+.memento-warning{font-weight:750;color:#356452;background:#e1ede1;padding:9px;border-radius:8px;font-size:11px}
+.memento-meta{font-size:11px;color:#607b6c;margin:9px 0}
+.memento-line{font-size:12px;padding:7px 0;overflow-wrap:anywhere;border-bottom:1px solid var(--line)}
+.memento-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.memento-disclaimer{font-size:11px;color:#6a7f71;margin:15px 0 0;line-height:1.6}
