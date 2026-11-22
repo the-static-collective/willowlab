@@ -120,3 +120,20 @@ export function createWorkbenchQuestion(artifact){
     "MEMENTO question: "+artifact.question;
   return "Investigate "+subject.slice(0,125);
 }
+
+
+/** Public, invented specimen for interaction testing. Never confused with MEMENTO's private records. */
+export function fictionalMementoSpecimen(){
+  return {
+    schema:"memento.context-pack/v0",origin_world:"fictional-song",depth:1,admission:"none",
+    worlds:[
+      {id:"fictional-song",title:"The Unfinished Song",status:"fictional_specimen",source_cut:"fixture:before-arrangement",admission:"none"},
+      {id:"fictional-gathering",title:"A Community Gathering",status:"fictional_specimen",source_cut:"fixture:after-arrangement",admission:"none"}
+    ],
+    edges:[{
+      id:"fictional-crossing",from:"fictional-song",to:"fictional-gathering",
+      relation:"possible-shared-performance",status:"proposed",admission:"none"
+    }],
+    notice:"Purely invented demonstration. No real artist, project, event, or MEMENTO state."
+  };
+}
