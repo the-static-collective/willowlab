@@ -1,11 +1,12 @@
 // Local-only MEMENTO import panel. No network calls, storage, or MEMENTO writes.
-import {readMementoArtifact,createWorkbenchQuestion,MAX_ARTIFACT_BYTES} from "./memento.mjs";
+import {readMementoArtifact,createWorkbenchQuestion,fictionalMementoSpecimen,MAX_ARTIFACT_BYTES} from "./memento.mjs";
 export function installMementoPanel({getHomeId,onCapture}){
   const input=document.getElementById("memento-file");
   const status=document.getElementById("memento-status");
   const preview=document.getElementById("memento-preview");
   const capture=document.getElementById("memento-capture");
   const clear=document.getElementById("memento-clear");
+  const sample=document.getElementById("memento-sample");
   let active=null,attachedHome=null;
   const node=(tag,className,text)=>{
     const e=document.createElement(tag);
@@ -72,6 +73,14 @@ export function installMementoPanel({getHomeId,onCapture}){
     if(!active||attachedHome!==getHomeId()){reset("Select a local artifact for this home first.");return;}
     onCapture(createWorkbenchQuestion(active));
     status.textContent="Question captured in this fictional home. MEMENTO is unchanged.";
+  });
+  sample.addEventListener("click",()=>{
+    reset("Loading fictional specimen…");
+    active=readMementoArtifact(fictionalMementoSpecimen());
+    attachedHome=getHomeId();
+    show(active);
+    status.textContent="Fictional specimen loaded locally. No MEMENTO repository or real records accessed.";
+    capture.disabled=false;clear.hidden=false;
   });
   clear.addEventListener("click",()=>reset());
   return {updateHome(){
