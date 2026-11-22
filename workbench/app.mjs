@@ -1,4 +1,5 @@
 import {initialLab,applyCommand,TRANSITIONS,humanQueue,handoff} from "./core.mjs";
+import {installMementoPanel} from "./memento-panel.mjs";
 let state=initialLab(), selectedHome="seed", selectedItem="first-door", commandNumber=0;
 const byId=id=>document.getElementById(id);
 const el=(tag,className,text)=>{
@@ -39,6 +40,7 @@ function home(){return state.homes.find(h=>h.id===selectedHome);}
 function work(){return home()?.items.find(w=>w.id===selectedItem);}
 function render(){
   const selected=home();
+  mementoPanel.updateHome();
   if(!selected){selectedHome=state.homes[0].id;return render();}
   if(!selected.items.some(i=>i.id===selectedItem))selectedItem=selected.items[0]?.id||null;
   byId("home-title").textContent=selected.name;
@@ -143,5 +145,13 @@ byId("copy-packet").addEventListener("click",async()=>{
 byId("reset").addEventListener("click",()=>{
   state=initialLab();selectedHome="seed";selectedItem="first-door";commandNumber=0;
   render();notice("Demo reset. No remote state was changed.");
+});
+const mementoPanel=installMementoPanel({
+  getHomeId:()=>selectedHome,
+  onCapture:(title)=>{
+    const id=freshId(home().items.map(w=>w.id),slug(title));
+    run(command("ADD_ITEM","builder",selectedHome,null,{id,title}));
+    if(home().items.some(w=>w.id===id)){selectedItem=id;render();}
+  }
 });
 render();
