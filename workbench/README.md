@@ -40,3 +40,37 @@ The demo starts with three **fictional** homes. You can add another home, add wo
 ## Verification and rollback
 
 One fully offline ES module implements state transitions, exact command-id replay, revision checks, gated evidence and per-home handoffs. Node tests cover these behaviors; production authority and browser UX are not implied. Delete the /workbench/ folder or decline to merge its PR to remove the experiment without affecting Willow's existing preview.
+
+
+## MEMENTO read-only aperture (first cross-project seam)
+
+The MEMENTO panel imports two **real, currently documented source contract types**, but only from a JSON file selected explicitly in the user's own browser:
+
+- \`memento.context-pack/v0\`, emitted by MEMENTO's \`scripts/compile-context-pack.mjs\`.
+- \`memento.return-ticket/v1\`, following the MEMENTO Return Engine's Return Ticket contract.
+
+Neither format is a MEMENTO ledger admission. \`admission: "none"\` is mandatory at the artifact level and on every retrieved world and edge. An edge's original \`status: admitted\` means only that the **source MEMENTO** has that status; the workbench always treats it as retrieved testimony, not local authority.
+
+To generate a context pack **on your own local checkout of MEMENTO**:
+
+    node scripts/compile-context-pack.mjs --world YOUR_WORLD_ID --depth 1 > memento-context.json
+
+Then open a local Willowlab preview and use **MEMENTO → Local MEMENTO JSON** to select that file. The import parser has no \`fetch\`, remote API, cookies, or storage; it reads a file in memory, caps imports at 256 KiB, validates shape and authority, and displays a bounded context preview. Changing home clears the imported context. Reloading clears it too.
+
+An explicit **Capture a demo question** click creates only an ordinary \`CAPTURED\` work item in the currently selected local, fictional home. The item title includes a small source cue so subsequent demo handoff packets may contain that cue. **Do not capture content you would not want to copy into a later handoff.** No automatic promotion or evidence attachment occurs.
+
+### Privacy and security notes
+
+- The existing Willowlab site is a **public static prototype**; it offers no authenticated role enforcement. Use \`localhost\` for private MEMENTO material, and do not treat a hosted preview as confidential merely because this JavaScript implementation does not send the imported artifact.
+- Never push genuine MEMENTO context packs, private source text, credentials, or local export files to this public repository.
+- A successful parse verifies only the artifact's supported **structure and declared statuses**. It does not prove original GitHub revision, source authenticity, causal truth, author approval, or native MEMENTO execution.
+- Source status, retrieval, local work capture, owner decision, and actual admission remain distinct.
+- No direct GitHub connector, server-to-server MEMENTO authorization, sync engine, or MEMENTO ledger mutation is implemented.
+
+### Provenance checked for adapter design
+
+- Private MEMENTO \`main\`: \`docs/architecture.md\`, \`scripts/compile-context-pack.mjs\`, \`scripts/lib/historical-imaginations.mjs\`, read by an authorized builder. Private source contents were **not** copied into this public repo.
+- The \`memento.return-ticket/v1\` contract was read using the installed MEMENTO Return Engine skill. Tests use fabricated specimens only.
+- Tests: \`node --test workbench/tests/memento.test.mjs\`.
+
+Next candidate is a **source-pinned, read-only repo handoff** that checks a user-approved MEMENTO Git commit/reference behind appropriately scoped authorization. Do not create a public endpoint for the private MEMENTO repository to enable that.
