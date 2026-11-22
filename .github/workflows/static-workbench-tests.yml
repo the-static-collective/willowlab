@@ -18,7 +18,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: node --test clean-plan/tests/core.test.mjs workbench/tests/core.test.mjs
+      - run: node --test clean-plan/tests/core.test.mjs workbench/tests/*.test.mjs
       - run: python3 tests/check_static.py
       - run: |
           test -f workbench/index.html
