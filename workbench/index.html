@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#163f3c">
+  <meta name="description" content="Standalone fictional Static Workbench multi-home experiment. No live projects or customer data.">
+  <title>STATIC WORKBENCH 001 · Fictional lab</title>
+  <link rel="stylesheet" href="./style.css">
+  <script type="module" src="./app.mjs"></script>
+</head>
+<body>
+  <a href="#workspace" class="skip">Skip to workbench</a>
+  <div class="demo-bar"><strong>EXPERIMENT 001</strong><span>Fictional data · In memory only · No permissions or deployments</span></div>
+  <header class="masthead wrap">
+    <div class="mast-symbol" aria-hidden="true">✳</div>
+    <div class="mast-copy"><p class="kicker">THE STATIC COLLECTIVE / SANDBOX</p>
+      <h1>Many homes.<br><em>One way to return.</em></h1>
+      <p>A modular, project-owned workbench experiment. Each home holds its own work. Each decision has a gate. Each action leaves a trace.</p>
+      <div class="mast-actions"><a href="../clean-plan/">See the original Clean Plan demo</a><a href="https://github.com/the-static-collective/willowlab/tree/experiment/static-workbench-001/workbench">Read the source</a></div>
+    </div>
+    <div class="mast-graphic" aria-hidden="true"><span class="orb orb-one"></span><span class="orb orb-two"></span><div class="graphic-card gc-one">HOME <small>01</small></div><div class="graphic-card gc-two">PROOF <small>02</small></div><div class="graphic-card gc-three">RETURN <small>03</small></div></div>
+  </header>
+
+  <main class="wrap layout" id="workspace">
+    <aside class="sidebar panel">
+      <div class="panel-heading"><p class="kicker">YOUR HOMES · DEMO</p><h2>Project rooms</h2></div>
+      <div id="home-tabs" class="home-tabs" aria-label="Choose a demo home"></div>
+      <details class="fold" id="new-home">
+        <summary>+ Add a new home</summary>
+        <form id="home-form" class="form-stack">
+          <label>Home name<input name="name" required maxlength="80" placeholder="Something worth tending"></label>
+          <label>Purpose (optional)<textarea name="description" maxlength="220" rows="3" placeholder="What is this home for?"></textarea></label>
+          <label>Specialty station<select name="special"><option value="">Core workbench only</option><option value="radio">Radio</option><option value="events">Events</option><option value="research">Research</option></select></label>
+          <button type="submit" class="button dark">Create fictional home</button>
+        </form>
+      </details>
+      <div class="sidebar-foot">This demo does not modify actual repos or project state. Reload to reset.</div>
+    </aside>
+
+    <section class="main-column" aria-labelledby="home-title">
+      <div class="home-banner panel">
+        <p class="kicker">SELECTED HOME</p><h2 id="home-title"></h2><p id="home-description"></p>
+        <div id="module-list" class="module-list" aria-label="Available workbench module labels"></div>
+      </div>
+      <div class="panel work-panel">
+        <div class="panel-heading"><div><p class="kicker">WORK</p><h2>One step, clearly held</h2></div><div class="small-indicator">SIMULATED</div></div>
+        <div id="item-list" class="item-list" aria-label="Work items in selected home"></div>
+        <details class="fold"><summary>+ Add a work item</summary>
+          <form id="work-form" class="form-inline"><label>Work item name<input name="title" required maxlength="140" placeholder="Describe the next useful work"></label><button class="button dark" type="submit">Capture work</button></form>
+        </details>
+      </div>
+      <div class="panel inspector">
+        <div class="panel-heading"><div><p class="kicker">DECISION GATE</p><h2>Current selected work</h2></div></div>
+        <div id="item-inspector"></div>
+      </div>
+    </section>
+
+    <aside class="right-column">
+      <section class="panel side-panel"><p class="kicker">HUMAN QUEUE</p><h2>Only decisions</h2><div id="human-queue"></div></section>
+      <section class="panel side-panel"><p class="kicker">PROOF TRAIL</p><h2>What changed</h2><div id="event-log"></div></section>
+      <section class="panel side-panel"><p class="kicker">RETURN PACKET</p><h2>Resume somewhere else</h2><p class="support-copy">A small scoped handoff generated from the selected fictional home.</p><pre id="return-packet" tabindex="0"></pre><button id="copy-packet" class="button outline" type="button">Copy return packet</button></section>
+    </aside>
+  </main>
+  <div class="wrap footer-controls"><div id="notice" role="status" aria-live="polite"></div><button id="reset" class="quiet" type="button">Reset this fictional lab</button></div>
+  <footer class="wrap foot"><span>STATIC WORKBENCH 001 · Experimental only</span><span>Inspired by the clean-plan source; distinct from Willow and all operational systems.</span></footer>
+</body>
+</html>
