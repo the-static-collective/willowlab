@@ -1,0 +1,23 @@
+name: Validate Willowlab preview
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check JavaScript syntax
+        run: |
+          node --check app.js
+          node --check clean-plan/app.js
+          node --check clean-plan/core.mjs
+      - name: Run Clean Plan Card fixture tests
+        run: node --test clean-plan/tests/core.test.mjs
+      - name: Check static asset references
+        run: python3 tests/check_static.py
