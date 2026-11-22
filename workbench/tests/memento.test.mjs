@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {readMementoArtifact,createWorkbenchQuestion,MAX_ARTIFACT_BYTES} from "../memento.mjs";
+import {readMementoArtifact,createWorkbenchQuestion,fictionalMementoSpecimen,MAX_ARTIFACT_BYTES} from "../memento.mjs";
 const context=()=>({
   schema:"memento.context-pack/v0",origin_world:"fictional-a",depth:1,admission:"none",
   worlds:[
@@ -78,4 +78,13 @@ test("captured workbench question cannot itself become a MEMENTO fact",()=>{
   assert.match(title,/^Investigate/);
   assert.equal(view.admission,"none");
   assert.throws(()=>createWorkbenchQuestion({...view,admission:"admit"}),{code:"INVALID"});
+});
+
+test("built-in specimen imports as a local non-authoritative context pack",()=>{
+  const result=readMementoArtifact(fictionalMementoSpecimen());
+  assert.equal(result.origin,"fictional-song");
+  assert.equal(result.worlds.length,2);
+  assert.equal(result.edges[0].source_status,"proposed");
+  assert.equal(result.admission,"none");
+  assert.equal(result.trusted,false);
 });
