@@ -59,6 +59,20 @@
 
     <aside class="right-column">
       <section class="panel side-panel"><p class="kicker">HUMAN QUEUE</p><h2>Only decisions</h2><div id="human-queue"></div></section>
+      <section class="panel side-panel memento-panel" aria-labelledby="memento-title">
+        <p class="kicker">MEMENTO · FIRST BRIDGE</p>
+        <h2 id="memento-title">Return without rewriting</h2>
+        <p class="support-copy">Open a local MEMENTO context pack or return ticket. Read it here, then explicitly capture a question in the selected fictional home.</p>
+        <label class="memento-file-label" for="memento-file">Local MEMENTO JSON</label>
+        <input id="memento-file" type="file" accept=".json,application/json">
+        <p id="memento-status" class="memento-meta" role="status" aria-live="polite">No artifact imported.</p>
+        <div id="memento-preview" class="memento-preview" aria-label="Read-only MEMENTO artifact preview"></div>
+        <div class="memento-actions">
+          <button type="button" id="memento-capture" class="button dark" disabled>Capture a demo question</button>
+          <button type="button" id="memento-clear" class="button outline" hidden>Clear source</button>
+        </div>
+        <p class="memento-disclaimer">No upload, storage, live source connection or MEMENTO admission. Capturing a question only changes this in-memory demo; return packets may include that question if copied.</p>
+      </section>
       <section class="panel side-panel"><p class="kicker">PROOF TRAIL</p><h2>What changed</h2><div id="event-log"></div></section>
       <section class="panel side-panel"><p class="kicker">RETURN PACKET</p><h2>Resume somewhere else</h2><p class="support-copy">A small scoped handoff generated from the selected fictional home.</p><pre id="return-packet" tabindex="0"></pre><button id="copy-packet" class="button outline" type="button">Copy return packet</button></section>
     </aside>
