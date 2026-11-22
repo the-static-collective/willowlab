@@ -74,3 +74,7 @@ An explicit **Capture a demo question** click creates only an ordinary \`CAPTURE
 - Tests: \`node --test workbench/tests/memento.test.mjs\`.
 
 Next candidate is a **source-pinned, read-only repo handoff** that checks a user-approved MEMENTO Git commit/reference behind appropriately scoped authorization. Do not create a public endpoint for the private MEMENTO repository to enable that.
+
+### Built-in fictional demonstration
+
+Use **Try fictional specimen** on the page to preview two made-up worlds and a proposed relation. This has no connection to the private MEMENTO repository and is safe for public demonstration.
