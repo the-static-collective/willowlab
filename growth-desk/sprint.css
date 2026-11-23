@@ -1,0 +1,60 @@
+.sprint-hero{padding-block:45px 75px}
+.sprint-hero h1{max-width:900px}
+.hero-cta{margin-top:18px}
+.sprint-snapshot{margin-bottom:60px}
+.sprint-toolbar{display:flex;align-items:center;justify-content:space-between;gap:30px;margin:30px 0 20px}
+.sprint-toolbar h2{font-size:clamp(28px,4vw,48px)}
+.toolbar-actions{display:flex;justify-content:flex-end;align-items:center;gap:9px;flex-wrap:wrap;max-width:560px}
+.toolbar-actions .file-button{font-size:13px}
+.local-warning{padding:16px 20px;background:#eef3ea;border-left:3px solid #518168;border-radius:5px;color:#3b5749;line-height:1.65;font-size:13px}
+.status{padding:12px 15px;border:1px solid #d8e1d6;border-radius:6px;background:#fffef9;color:#355a45;margin:18px 0 24px}
+.sprint-columns{display:grid;grid-template-columns:minmax(310px,.8fr) minmax(480px,1.2fr);gap:22px;align-items:start}
+.sprint-sidebar,.sprint-work{display:grid;gap:20px;align-content:start;min-width:0}
+.sprint-panel{overflow:hidden}
+.sprint-panel .panel-head{border-bottom:1px solid var(--line);align-items:center;min-height:65px}
+.sprint-panel form{padding:20px}
+.sprint-panel form .form-grid{padding:0}
+.compact-label{display:flex;align-items:center;gap:8px;font-weight:600;font-size:12px;white-space:nowrap;margin:0}
+.compact-label select{padding:6px 8px;font-size:12px}
+.sprint-list{padding:8px;display:grid;gap:5px;max-height:720px;overflow:auto}
+.sprint-item{display:block;width:100%;text-align:left;border:1px solid transparent;border-radius:8px;background:transparent;color:var(--ink);padding:13px 15px;cursor:pointer}
+.sprint-item:hover,.sprint-item[aria-current="true"]{background:var(--mist);border-color:#c7d9ca}
+.sprint-item strong{display:block;font-size:16px;line-height:1.4}
+.sprint-item span{display:block;color:var(--secondary);font-size:12px;margin-top:3px}
+.sprint-item .action-label{font-size:11px;font-weight:750;color:#346c50;letter-spacing:.03em;text-transform:uppercase}
+.selected-view{padding:20px 24px;font-size:14px;line-height:1.65}
+.selected-view p{margin:0 0 12px}
+.selected-view strong{font-weight:750;color:var(--ink)}
+.selected-view a{color:#27664a;overflow-wrap:anywhere}
+.selected-view .source-time{font-size:12px;color:var(--secondary)}
+.empty{padding:20px;color:var(--secondary);font-size:13px}
+.review-fields{padding:0 24px 24px}
+.review-fields>label{margin-top:10px}
+.review-fields button{margin-top:12px}
+.sprint-inner{padding:20px 24px 24px}
+.sprint-inner .form-grid{padding:0}
+.sprint-inner .fine{margin:0 0 15px}
+.sprint-inner textarea[readonly]{background:#f7faf5}
+.sprint-inner .tick{margin:0 0 4px;padding:8px 0;font-size:13px}
+.sprint-inner .tick input{accent-color:#256244}
+.sprint-inner #contact-status,.sprint-inner #followup-status,.sprint-inner #draft-status{margin-top:15px}
+.review-fields .fine{margin-top:12px}
+.end-note{margin-top:75px;padding:45px 30px;background:var(--mist);border:1px solid var(--line);border-radius:12px}
+.end-note h2{font-size:32px}
+.end-note p{color:var(--secondary);max-width:800px}
+.end-note a{color:#1c684b}
+@media(max-width:1050px){.sprint-columns{grid-template-columns:minmax(270px,1fr) minmax(350px,1.25fr)}.sprint-toolbar{display:block}.toolbar-actions{justify-content:flex-start;max-width:100%}}
+@media(max-width:760px){.sprint-columns{grid-template-columns:1fr}.sprint-list{max-height:420px}.sprint-panel form{padding:16px}.sprint-snapshot{margin-bottom:35px}.sprint-inner{padding:18px}.selected-view{padding:18px}.review-fields{padding:0 18px 18px}.end-note{margin-top:45px;padding:25px 18px}}
+@media(max-width:520px){.sprint-panel .panel-head{display:block}.sprint-panel .panel-head h3{margin-bottom:8px}.toolbar-actions>*{flex-grow:1}.toolbar-actions{gap:8px}.compact-label{white-space:normal}.end-note h2{font-size:25px}}
+
+.mission-section{padding-top:68px}
+.mission-panel .panel-head{padding:0 0 15px;border-bottom:1px solid var(--line)}
+.mission-panel .fine{margin:10px 0 16px}
+.mission-output{white-space:pre-wrap;overflow-wrap:anywhere;max-height:480px;overflow:auto;
+  padding:16px;border:1px solid var(--line);background:#f7faf5;color:var(--ink);
+  border-radius:10px;font:13px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace}
+#nebula-prompt{font:13px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace}
+#nebula-return{max-height:210px}
+.mission-panel .rule{margin:23px 0 17px}
+.mission-panel .file-button{max-width:100%;white-space:normal}
+@media(max-width:760px){.mission-section{padding-top:45px}.mission-output{max-height:300px}}

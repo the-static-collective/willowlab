@@ -1,0 +1,56 @@
+name: Willow Partner Sprint 002 review checks
+on:
+  push:
+    branches: [feature/willow-partner-sprint-002]
+  pull_request:
+    paths:
+      - 'growth-desk/sprint*'
+      - 'growth-desk/mission.mjs'
+      - 'growth-desk/tests/mission.test.mjs'
+      - 'growth-desk/tests/sprint.test.mjs'
+      - 'growth-desk/tests/sprint.e2e.spec.mjs'
+      - 'growth-desk/index.html'
+      - '.github/workflows/partner-sprint-review.yml'
+permissions:
+  contents: read
+jobs:
+  sprint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: JS checks
+        run: |
+          node --check growth-desk/sprint.mjs
+          node --check growth-desk/sprint-app.mjs
+          node --check growth-desk/mission.mjs
+      - name: Pure business workflow tests
+        run: |
+          node --test growth-desk/tests/sprint.test.mjs
+          node --test growth-desk/tests/mission.test.mjs
+          node --test growth-desk/tests/core.test.mjs
+          node --test neighbor-weave/tests/core.test.mjs
+      - name: Full public-site regression
+        run: |
+          python3 tests/check_static.py
+          test -f growth-desk/sprint.html
+          test -f growth-desk/sprint.css
+  browser_smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install browser test runner
+        run: |
+          npm install --no-save @playwright/test@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Exercise full Partner Sprint browser flow
+        run: |
+          python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/willow-http.log 2>&1 &
+          sleep 2
+          npx playwright test growth-desk/tests/sprint.e2e.spec.mjs --reporter=line --workers=1
