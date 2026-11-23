@@ -1,6 +1,8 @@
 import {newSprint,loadStarterAtlas,addCandidate,reviewCandidate,planForReview,
   logManualContact,resolveFollowup,sprintQueue,exportSprint,importSprint,
   toWmsProposal} from "./sprint.mjs";
+import {missionBrief,missionReceipt,makeNebulaHandoff,formatNebulaPrompt,
+  inspectNebulaReturn} from "./mission.mjs";
 
 const $=selector=>document.querySelector(selector);
 const key="willowlab:partner-sprint:v1";
@@ -11,6 +13,7 @@ const nowLocal=()=>{const d=new Date(),x=new Date(d.getTime()-d.getTimezoneOffse
 const plusDays=(days)=>{const d=new Date(nowLocal()+"T12:00:00");
   d.setDate(d.getDate()+days);return d.toISOString().slice(0,10);};
 let state=newSprint(),selectedId=null,lastDraft=null,storageAvailable=true;
+let currentNebulaPacket=null;
 try{
   const saved=localStorage.getItem(key);
   if(saved)state=importSprint(JSON.parse(saved));
@@ -125,7 +128,8 @@ function renderQueue(){
     b.lastChild.className="action-label";
     if(candidate.followup_on)b.append(addText("span","Review date: "+candidate.followup_on));
     b.addEventListener("click",()=>{
-      selectedId=candidate.id;lastDraft=null;
+      selectedId=candidate.id;lastDraft=null;currentNebulaPacket=null;
+      $("#nebula-prompt").value="";
       $("#draft-output").value="";
       $("#decision-reason").value="";
       setStatus("#draft-status","No draft generated for this selection.");
@@ -136,9 +140,13 @@ function renderQueue(){
 }
 function render(){
   if(selectedId&&!getSelected())selectedId=null;
-  renderQueue();renderSelected();
+  renderQueue();renderSelected();renderMission();
 }
 function changed(message){
+  currentNebulaPacket=null;
+  $("#nebula-prompt").value="";
+  setStatus("#nebula-status","Research changed. Prepare a new Nebula packet for the current revision.");
+  setStatus("#nebula-return","No current matching return note loaded.");
   const ok=persist();
   render();
   notify(message+(ok?" Saved only in this browser.":" Browser saving unavailable; export the board."));
@@ -152,6 +160,87 @@ function execute(action,message){
     notify("No change: "+error.message);
   }
 }
+function renderMission(){
+  try {
+    const brief=missionBrief(state,nowLocal());
+    if(!brief.missions.length){
+      setStatus("#mission-brief","No business research yet. Load the starter atlas first.");
+      return;
+    }
+    const lines=brief.missions.slice(0,5).map(m=>{
+      return m.rank+". "+m.candidate.name+" — "+m.next+
+        "\\n  Public observation: "+m.candidate.source.observed+
+        "\\n  Key question: "+m.candidate.falsifier+
+        "\\n  Next: "+m.proposed_action;
+    });
+    setStatus("#mission-brief",lines.join("\\n\\n")+
+      "\\n\\nRule-based suggestions only. No native MOTIF run, source refresh, owner approval or sending.");
+  } catch(error){
+    setStatus("#mission-brief","Mission briefing held: "+error.message);
+  }
+}
+$("#mission-refresh").addEventListener("click",renderMission);
+$("#mission-receipt").addEventListener("click",()=>{
+  try {
+    if(!selectedId)throw Error("Choose a candidate first.");
+    const r=missionReceipt(state,selectedId,nowLocal());
+    setStatus("#mission-brief",JSON.stringify(r,null,2));
+  } catch(error) {
+    setStatus("#mission-brief","No reasoning receipt: "+error.message);
+  }
+});
+$("#nebula-prepare").addEventListener("click",()=>{
+  try {
+    const scope=$("#nebula-scope").value;
+    if(scope==="selected"&&!selectedId)throw Error("Select a business first.");
+    currentNebulaPacket=makeNebulaHandoff(state,nowLocal(),
+      scope==="selected"?selectedId:null);
+    $("#nebula-prompt").value=formatNebulaPrompt(currentNebulaPacket);
+    setStatus("#nebula-return","No return note loaded.");
+    setStatus("#nebula-status","Prepared a local review proposal for "+
+      currentNebulaPacket.candidates.length+
+      " candidate(s). Not transferred to Nebula or WillowConnect.");
+  } catch(error) {
+    currentNebulaPacket=null;$("#nebula-prompt").value="";
+    setStatus("#nebula-status","Packet not prepared: "+error.message);
+  }
+});
+$("#nebula-copy").addEventListener("click",()=>
+  copyText($("#nebula-prompt").value,"#nebula-status"));
+$("#nebula-download").addEventListener("click",()=>{
+  if(!currentNebulaPacket){
+    setStatus("#nebula-status","Prepare the current packet first.");return;
+  }
+  try {
+    const now=makeNebulaHandoff(state,currentNebulaPacket.created_on,
+      currentNebulaPacket.candidates.length===1?
+        currentNebulaPacket.candidates[0].candidate.id:null);
+    if(now.packet_id!==currentNebulaPacket.packet_id)throw Error("Stale review packet.");
+    download(currentNebulaPacket,"willow-nebula-review-"+currentNebulaPacket.created_on+".json");
+    setStatus("#nebula-status","Downloaded for manual review. NOT sent, synced, approved or executed.");
+  } catch(error) {
+    setStatus("#nebula-status","Cannot export stale packet: "+error.message);
+  }
+});
+$("#nebula-return-file").addEventListener("change",async event=>{
+  const file=event.target.files?.[0];
+  if(!file)return;
+  try {
+    if(!currentNebulaPacket)throw Error("Prepare the matching handoff first.");
+    if(file.size>65536)throw Error("Review note too large.");
+    const reply=JSON.parse(await file.text());
+    const preview=inspectNebulaReturn(state,currentNebulaPacket,reply);
+    const notes=preview.annotations.map(a=>a.candidate_id+" · "+a.state+
+      "\\n  Open question: "+a.question+"\\n  Note: "+a.notes).join("\\n\\n");
+    setStatus("#nebula-return",notes+"\\n\\nThis is an unverified imported note, not WMS approval.");
+    setStatus("#nebula-status","Return note inspected. Zero Sprint, WMS, owner-decision or delivery changes.");
+  } catch(error) {
+    setStatus("#nebula-return","Review note rejected: "+error.message);
+  } finally {
+    event.target.value="";
+  }
+});
+
 $("#queue-filter").addEventListener("change",renderQueue);
 $("#load-starters").addEventListener("click",()=>{
   execute(()=>{
