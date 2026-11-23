@@ -5,3 +5,6 @@ node_modules/
 .env
 .env.*
 !.env.example
+
+# Never commit Cloudflare Pages local secrets.
+.dev.vars*
