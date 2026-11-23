@@ -195,3 +195,14 @@ test("import rejects bad revision, provider permissions and overlong unsupported
  dated.candidates[0].manual_contact.followup_on="2027-06-01";
  assert.throws(()=>importSprint(dated),/INVALID_SPRINT_IMPORT/);
 });
+
+test("opaque machine command IDs are not mistaken for phone numbers",()=>{
+  const s=newSprint();
+  const machineId="cmd_5075551234_0001";
+  const added=addCandidate(s,command(s,machineId,{candidate:starter()}));
+  assert.equal(added.state.candidates.length,1);
+  assert.equal(addCandidate(added.state,command(s,machineId,{candidate:starter()})).duplicate,true);
+  // The actual public-source fields continue to reject contact details.
+  assert.throws(()=>addCandidate(s,command(s,"normal-command-001",
+    {candidate:{...starter(),observation:"Call 5075551234"}})),/INVALID_PUBLIC_CANDIDATE/);
+});
