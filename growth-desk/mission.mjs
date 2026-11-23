@@ -42,6 +42,8 @@ export function missionBrief(sprint,today){
   const missions=queue.map((q,i)=>{
     if(!knownNext.has(q.next))error("UNKNOWN_MISSION_STATE");
     const item=map.get(q.id),p=sourcePack(item);
+    const sourceAgeDays=Math.floor((Date.parse(today+"T12:00:00Z")-Date.parse(p.source.checked_on+"T12:00:00Z"))/86400000);
+    const sourceNeedsRecheck=sourceAgeDays>30||sourceAgeDays<0;
     const nextAction={
       FOLLOWUP_DUE:"Review the reported external follow-up and decide whether any contact is appropriate.",
       OWNER_REVIEW_AND_DRAFT:"Ask Colton to verify Willow's service area and this business's fit; prepare an unsent introduction.",
@@ -51,7 +53,11 @@ export function missionBrief(sprint,today){
       HELD:"Keep the candidate on hold. Identify what information would change the decision.",
       CLOSED:"No further work unless the owner explicitly reopens this research."
     }[q.next];
-    return {rank:i+1,candidate:p,next:q.next,proposed_action:nextAction,
+    return {rank:i+1,candidate:p,next:q.next,
+      source_freshness:{checked_on:p.source.checked_on,days_since_check:sourceAgeDays,
+        needs_recheck:sourceNeedsRecheck},
+      proposed_action:sourceNeedsRecheck&&q.next!=="CLOSED"?
+        "Reverify the dated public source before acting. "+nextAction:nextAction,
       permission:"REVIEW_ONLY_NO_SEND",confidence:"HYPOTHESIS_NOT_VERIFIED"};
   });
   return {schema:"willowlab.motif-brief/v1",
