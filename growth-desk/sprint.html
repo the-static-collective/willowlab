@@ -139,6 +139,45 @@
       </div>
     </div>
   </section>
+  <section class="section mission-section" id="mission-control" aria-labelledby="mission-title">
+    <div class="section-heading"><div>
+      <p class="eyebrow">05 / MOTIF × JARVIS × Nebula (prototype)</p>
+      <h2 id="mission-title">Next move, with the reason attached.</h2>
+      <p class="lede">A deterministic, source-grounded mission briefing makes the next question obvious. Export a review packet for Colton's Nebula workflow, then examine any human-returned notes without accepting them as WMS authority.</p>
+    </div></div>
+    <div class="split">
+      <div class="panel inner mission-panel">
+        <div class="panel-head"><h3>Mission briefing</h3><span class="stage">MOTIF-INSPIRED · NOT NATIVE AI</span></div>
+        <p class="fine">OBSERVE → HYPOTHESIZE → PROBE → REVISE → PLAN → VERIFY. The briefing uses only source-backed, local status rules; it does not call a model, research the internet or decide who to contact.</p>
+        <div class="actions">
+          <button type="button" id="mission-refresh" class="primary">Brief me on next moves</button>
+          <button type="button" id="mission-receipt" class="secondary">Show selected reasoning receipt</button>
+        </div>
+        <pre id="mission-brief" class="mission-output" role="status" aria-live="polite">Load research to generate a next-action briefing.</pre>
+      </div>
+      <div class="panel inner mission-panel">
+        <div class="panel-head"><h3>Nebula handoff</h3><span class="stage">DOCUMENTATION REVIEW ONLY</span></div>
+        <p class="fine">Nebula works through Colton's WMS governing documents and its single owner-action list, not through a verified public API. This packet is manually transferred and cannot update his system.</p>
+        <div class="field">
+          <label for="nebula-scope">Review scope</label>
+          <select id="nebula-scope"><option value="selected">Current selected business</option><option value="priority">Up to five priority candidates</option></select>
+        </div>
+        <div class="actions">
+          <button type="button" id="nebula-prepare" class="primary">Prepare Nebula packet</button>
+          <button type="button" id="nebula-copy" class="secondary">Copy review prompt</button>
+          <button type="button" id="nebula-download" class="secondary">Export packet JSON</button>
+        </div>
+        <textarea readonly id="nebula-prompt" rows="11" aria-label="Unsent Nebula review prompt" placeholder="Prepare a packet to see the exact source-linked handoff instructions."></textarea>
+        <p id="nebula-status" class="fine" role="status" aria-live="polite">Nothing sent to Nebula. No owner approvals or WMS records changed.</p>
+        <div class="rule"></div>
+        <label class="file-button" for="nebula-return-file">Inspect a manually returned Nebula JSON note
+          <input id="nebula-return-file" type="file" accept=".json,application/json">
+        </label>
+        <p class="fine">This checks the packet ID and current local revision. Imported notes remain unverified and do not modify Sprint status, grant permission, or create tasks.</p>
+        <pre id="nebula-return" class="mission-output" role="status" aria-live="polite">No return note loaded.</pre>
+      </div>
+    </div>
+  </section>
   <section class="end-note">
     <h2>What happens when something becomes real?</h2>
     <p>Colton decides whether to move it into his actual office workflow. A review packet can be handed to WillowConnect, but a lead must never silently become a customer, a partnership or a subscriber. No automatic follow-up is installed, and browser storage cannot serve as an office database.</p>
