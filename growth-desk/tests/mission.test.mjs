@@ -120,3 +120,18 @@ test("manual self-reports are evidence only and do not create authenticated send
   assert.equal(m.missions[0].candidate.manual_contact.proof,"OPERATOR_SELF_REPORT_NOT_PROVIDER_VERIFIED");
   assert.equal(m.limits.owner_approval,false);
 });
+
+test("source date aging warns before proposing external action without live crawling",()=>{
+ const m=missionBrief(make(),"2027-01-02");
+ assert.equal(m.missions[0].source_freshness.needs_recheck,true);
+ assert.ok(m.missions[0].source_freshness.days_since_check>30);
+ assert.match(m.missions[0].proposed_action,/Reverify the dated public source/);
+ assert.equal(m.limits.provider_send,false);
+});
+test("a returned packet with altered observed evidence is not accepted as genuine review",()=>{
+ const s=make(),p=makeNebulaHandoff(s,today,"waseca-realty");
+ const forged=structuredClone(p);
+ forged.candidates[0].candidate.source.observed="They definitely need outside cleaners.";
+ assert.throws(()=>inspectNebulaReturn(s,forged,response(forged)),
+   /STALE_OR_ALTERED_HANDOFF/);
+});
