@@ -162,3 +162,36 @@ test("export/import preserves reported followup date without converting it to a 
  assert.equal(round.app_messages_sent,0);
  assert.equal(sprintQueue(round,"2026-11-30")[0].next,"FOLLOWUP_DUE");
 });
+
+test("a manual contact cannot be reclassified into an unreviewed or declined state",()=>{
+ let s=short();
+ s=logManualContact(s,command(s,"touch-review-lock",{id:starter().id,contact})).state;
+ assert.throws(()=>reviewCandidate(s,command(s,"re-review-closed",
+   {id:starter().id,review:"DECLINE",reason:"Contradicts prior contact record"})),/INVALID_REVIEW/);
+ assert.equal(exportSprint(s).candidates[0].review,"SHORTLIST");
+});
+test("public source narrative permits line breaks but URLs cannot contain hidden whitespace",()=>{
+ const s=newSprint();
+ const newline={...starter(),observation:"Leasing and\nproperty management services."};
+ const valid=addCandidate(s,command(s,"multiline",{candidate:newline})).state;
+ assert.equal(valid.candidates.length,1);
+ assert.match(exportSprint(valid).candidates[0].public.observation,/\n/);
+ assert.throws(()=>addCandidate(s,command(s,"bad-url",{candidate:{...starter(),source_url:
+   "https://www.lloydmanagement.com/\n"}})),/INVALID_PUBLIC_URL/);
+});
+test("import rejects bad revision, provider permissions and overlong unsupported contact timing",()=>{
+ const e=exportSprint(populate());
+ for(const mutate of [
+  x=>x.generated_from_revision=-1,
+  x=>x.generated_from_revision="unknown",
+  x=>x.permissions.provider_send=true
+ ]){
+  const value=structuredClone(e);mutate(value);
+  assert.throws(()=>importSprint(value),/INVALID_SPRINT_IMPORT/);
+ }
+ let s=short();
+ s=logManualContact(s,command(s,"touch-date",{id:starter().id,contact})).state;
+ const dated=exportSprint(s);
+ dated.candidates[0].manual_contact.followup_on="2027-06-01";
+ assert.throws(()=>importSprint(dated),/INVALID_SPRINT_IMPORT/);
+});
