@@ -46,3 +46,15 @@
 @media(max-width:1050px){.sprint-columns{grid-template-columns:minmax(270px,1fr) minmax(350px,1.25fr)}.sprint-toolbar{display:block}.toolbar-actions{justify-content:flex-start;max-width:100%}}
 @media(max-width:760px){.sprint-columns{grid-template-columns:1fr}.sprint-list{max-height:420px}.sprint-panel form{padding:16px}.sprint-snapshot{margin-bottom:35px}.sprint-inner{padding:18px}.selected-view{padding:18px}.review-fields{padding:0 18px 18px}.end-note{margin-top:45px;padding:25px 18px}}
 @media(max-width:520px){.sprint-panel .panel-head{display:block}.sprint-panel .panel-head h3{margin-bottom:8px}.toolbar-actions>*{flex-grow:1}.toolbar-actions{gap:8px}.compact-label{white-space:normal}.end-note h2{font-size:25px}}
+
+.mission-section{padding-top:68px}
+.mission-panel .panel-head{padding:0 0 15px;border-bottom:1px solid var(--line)}
+.mission-panel .fine{margin:10px 0 16px}
+.mission-output{white-space:pre-wrap;overflow-wrap:anywhere;max-height:480px;overflow:auto;
+  padding:16px;border:1px solid var(--line);background:#f7faf5;color:var(--ink);
+  border-radius:10px;font:13px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace}
+#nebula-prompt{font:13px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace}
+#nebula-return{max-height:210px}
+.mission-panel .rule{margin:23px 0 17px}
+.mission-panel .file-button{max-width:100%;white-space:normal}
+@media(max-width:760px){.mission-section{padding-top:45px}.mission-output{max-height:300px}}
