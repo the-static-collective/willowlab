@@ -6,6 +6,7 @@ on:
     paths:
       - 'growth-desk/sprint*'
       - 'growth-desk/tests/sprint.test.mjs'
+      - 'growth-desk/tests/sprint.e2e.spec.mjs'
       - 'growth-desk/index.html'
       - '.github/workflows/partner-sprint-review.yml'
 permissions:
@@ -32,3 +33,20 @@ jobs:
           python3 tests/check_static.py
           test -f growth-desk/sprint.html
           test -f growth-desk/sprint.css
+  browser_smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install browser test runner
+        run: |
+          npm install --no-save @playwright/test@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Exercise full Partner Sprint browser flow
+        run: |
+          python3 -m http.server 8000 --bind 127.0.0.1 >/tmp/willow-http.log 2>&1 &
+          sleep 2
+          npx playwright test growth-desk/tests/sprint.e2e.spec.mjs --reporter=line --workers=1
