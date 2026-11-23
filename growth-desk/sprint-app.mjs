@@ -169,12 +169,12 @@ function renderMission(){
     }
     const lines=brief.missions.slice(0,5).map(m=>{
       return m.rank+". "+m.candidate.name+" — "+m.next+
-        "\\n  Public observation: "+m.candidate.source.observed+
-        "\\n  Key question: "+m.candidate.falsifier+
-        "\\n  Next: "+m.proposed_action;
+        "\n  Public observation: "+m.candidate.source.observed+
+        "\n  Key question: "+m.candidate.falsifier+
+        "\n  Next: "+m.proposed_action;
     });
-    setStatus("#mission-brief",lines.join("\\n\\n")+
-      "\\n\\nRule-based suggestions only. No native MOTIF run, source refresh, owner approval or sending.");
+    setStatus("#mission-brief",lines.join("\n\n")+
+      "\n\nRule-based suggestions only. No native MOTIF run, source refresh, owner approval or sending.");
   } catch(error){
     setStatus("#mission-brief","Mission briefing held: "+error.message);
   }
@@ -231,8 +231,8 @@ $("#nebula-return-file").addEventListener("change",async event=>{
     const reply=JSON.parse(await file.text());
     const preview=inspectNebulaReturn(state,currentNebulaPacket,reply);
     const notes=preview.annotations.map(a=>a.candidate_id+" · "+a.state+
-      "\\n  Open question: "+a.question+"\\n  Note: "+a.notes).join("\\n\\n");
-    setStatus("#nebula-return",notes+"\\n\\nThis is an unverified imported note, not WMS approval.");
+      "\n  Open question: "+a.question+"\n  Note: "+a.notes).join("\n\n");
+    setStatus("#nebula-return",notes+"\n\nThis is an unverified imported note, not WMS approval.");
     setStatus("#nebula-status","Return note inspected. Zero Sprint, WMS, owner-decision or delivery changes.");
   } catch(error) {
     setStatus("#nebula-return","Review note rejected: "+error.message);
