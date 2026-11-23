@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>WillowLab | Neighbor Weave Review Room</title>
+<style>
+:root{font:16px/1.55 system-ui,sans-serif;color:#173b2e;background:#faf9f4}
+body{max-width:860px;margin:0 auto;padding:clamp(16px,4vw,36px)}
+h1,h2{line-height:1.2}h1{font-size:clamp(1.8rem,5vw,2.7rem)}
+p{max-width:75ch}
+.notice{background:#ebf1e8;border-left:4px solid #2d765a;padding:14px 18px;margin:20px 0}
+.tools{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:20px 0}
+button,.file-label{background:#155740;color:white;border:0;border-radius:8px;padding:10px 16px;cursor:pointer;font:inherit}
+button:disabled{opacity:.45;cursor:default}
+.file-label input{position:absolute;opacity:0;width:1px;height:1px}
+li{padding:10px 0}
+article{border:1px solid #d7ddd5;border-radius:12px;background:#fff;padding:18px;margin:12px 0}
+small{color:#54615b}a{color:#155740}
+dl{display:grid;grid-template-columns:160px 1fr;gap:8px;margin:16px 0}
+dt{font-weight:650}dd{margin:0}code{font-size:.88em}
+@media(max-width:540px){dl{display:block}dt{margin-top:10px}}
+</style></head>
+<body>
+<p><a href="/">← WillowLab</a></p>
+<h1>Neighbor Weave · Private Partnerships Room</h1>
+<p class="notice"><strong>Review demonstration, not Colton's CRM.</strong> Every organization displayed is a possible relationship to investigate, not a partner, client, or confirmed lead. Nothing here sends email, books work, or writes to WillowConnect.</p>
+<p>Based on <strong>STATIC SEED v2.1</strong> (package version <code>0.2.1</code>). Explore fictional data, or select the public-research specimen JSON from your own copy of STATIC SEED. File contents remain in this browser tab's memory; nothing is automatically uploaded, stored, or contacted.</p>
+<div class="tools">
+<button type="button" id="fictional">Show fictional specimen</button>
+<label class="file-label">Choose local specimen JSON <input id="local" type="file" accept=".json,application/json"></label>
+</div>
+<p id="status" aria-live="polite" role="status">Nothing loaded.</p>
+<section id="cards" aria-label="Source-linked relationship hypotheses"></section>
+<p><small>Source URLs may be opened manually. The viewer itself does not visit them, validate current availability, or record owner review. Do not load customer databases, private contacts, or operational WMS exports.</small></p>
+<script type="module" src="./app.mjs"></script>
+</body></html>
