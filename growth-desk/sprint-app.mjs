@@ -2,7 +2,7 @@ import {newSprint,loadStarterAtlas,addCandidate,reviewCandidate,planForReview,
   logManualContact,resolveFollowup,sprintQueue,exportSprint,importSprint,
   toWmsProposal} from "./sprint.mjs";
 import {missionBrief,missionReceipt,makeNebulaHandoff,formatNebulaPrompt,
-  inspectNebulaReturn} from "./mission.mjs";
+  inspectNebulaReturn,makeConnectReviewBundle} from "./mission.mjs";
 
 const $=selector=>document.querySelector(selector);
 const key="willowlab:partner-sprint:v1";
@@ -220,6 +220,19 @@ $("#nebula-download").addEventListener("click",()=>{
     setStatus("#nebula-status","Downloaded for manual review. NOT sent, synced, approved or executed.");
   } catch(error) {
     setStatus("#nebula-status","Cannot export stale packet: "+error.message);
+  }
+});
+$("#connect-bundle").addEventListener("click",()=>{
+  try{
+    const scope=$("#nebula-scope").value;
+    if(scope==="selected"&&!selectedId)throw Error("Choose a business first.");
+    const bundle=makeConnectReviewBundle(state,nowLocal(),
+      scope==="selected"?selectedId:null);
+    download(bundle,"willow-connect-owner-review-"+bundle.created_on+".json");
+    setStatus("#nebula-status","Single-file Connect review bundle saved. "+
+      "It contains only source-linked research and is NOT synced, sent or owner-approved.");
+  }catch(error){
+    setStatus("#nebula-status","Review bundle not exported: "+error.message);
   }
 });
 $("#nebula-return-file").addEventListener("change",async event=>{
