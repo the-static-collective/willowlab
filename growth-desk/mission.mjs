@@ -206,3 +206,23 @@ export function inspectNebulaReturn(sprint,packet,reply){
       customer_records:0,outbound_messages:0},
     next:"Human compares notes against the governing WMS documents; never accept the note as Colton's authorization."};
 }
+
+/**
+ * Single-file manual transfer to Colton's private Connect owner review inbox.
+ * Contains only allowlisted source research and an unsent Nebula proposal.
+ * This is NOT a sender/API instruction, signed credential or automatic sync.
+ */
+export function makeConnectReviewBundle(sprint,today,selectedId=null){
+  const sprintExport=exportSprint(sprint);
+  const handoff=makeNebulaHandoff(sprint,today,selectedId);
+  if(handoff.source.revision!==sprintExport.generated_from_revision)
+    error("SOURCE_REVISION_CHANGED");
+  return {schema:"willowlab.growth-connect-bundle/v1",
+    state:"DRAFT_NOT_TRANSFERRED",
+    created_on:today,
+    sprint_export:sprintExport,
+    handoff,
+    permissions:{owner_approval:false,customer_import:false,
+      external_outreach:false,marketing_enrollment:false,wms_sync:false},
+    destination:"CONNECT_OWNER_REVIEW_ONLY_NOT_LIVE_SYNC"};
+}
