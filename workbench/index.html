@@ -62,7 +62,20 @@
       <section class="panel side-panel memento-panel" aria-labelledby="memento-title">
         <p class="kicker">MEMENTO · FIRST BRIDGE</p>
         <h2 id="memento-title">Return without rewriting</h2>
-        <p class="support-copy">Open a local MEMENTO context pack or return ticket. Read it here, then explicitly capture a question in the selected fictional home.</p>
+        <p class="support-copy">Find a source-pinned world through a protected endpoint, open a local JSON export, or try the fictional specimen. All three remain <code>admission: none</code>.</p>
+        <div class="memento-private">
+          <h3>Read private MEMENTO</h3>
+          <p class="support-copy">Optional, owner-authorized source lookup. Requires an authenticated Cloudflare Access endpoint configured separately. Each read stays pinned to the listed Git revision.</p>
+          <button type="button" id="memento-list-worlds" class="button dark">Find worlds in private MEMENTO</button>
+          <a href="../api/memento?mode=worlds" id="memento-access-login" target="_blank" rel="noopener noreferrer">Open Access sign-in / source check</a>
+          <label for="memento-world">Choose world</label>
+          <select id="memento-world" disabled><option value="">Sign in and list worlds first</option></select>
+          <label for="memento-depth">Bounded context depth</label>
+          <select id="memento-depth"><option value="0">0 · This world</option><option value="1" selected>1 · Immediate relations</option><option value="2">2 · Two hops</option><option value="3">3 · Three hops</option></select>
+          <button type="button" id="memento-read-world" class="button dark" disabled>Read at pinned source commit</button>
+          <p id="memento-live-status" class="memento-meta" role="status" aria-live="polite">No private source queried. Cloudflare setup required.</p>
+        </div>
+        <p class="memento-divider">OR USE A LOCAL DEMO / EXPORT</p>
         <button type="button" id="memento-sample" class="button outline">Try fictional specimen</button>
         <label class="memento-file-label" for="memento-file">Local MEMENTO JSON</label>
         <input id="memento-file" type="file" accept=".json,application/json">
@@ -72,7 +85,7 @@
           <button type="button" id="memento-capture" class="button dark" disabled>Capture a demo question</button>
           <button type="button" id="memento-clear" class="button outline" hidden>Clear source</button>
         </div>
-        <p class="memento-disclaimer">No upload, storage, live source connection or MEMENTO admission. Capturing a question only changes this in-memory demo; return packets may include that question if copied.</p>
+        <p class="memento-disclaimer">Private lookup requires authorized access and fetches scoped metadata from the server. No browser token, local storage or MEMENTO write. Capturing a question only changes this in-memory demo; return packets may include its title if copied.</p>
       </section>
       <section class="panel side-panel"><p class="kicker">PROOF TRAIL</p><h2>What changed</h2><div id="event-log"></div></section>
       <section class="panel side-panel"><p class="kicker">RETURN PACKET</p><h2>Resume somewhere else</h2><p class="support-copy">A small scoped handoff generated from the selected fictional home.</p><pre id="return-packet" tabindex="0"></pre><button id="copy-packet" class="button outline" type="button">Copy return packet</button></section>
