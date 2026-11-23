@@ -5,6 +5,8 @@ on:
   pull_request:
     paths:
       - 'growth-desk/sprint*'
+      - 'growth-desk/mission.mjs'
+      - 'growth-desk/tests/mission.test.mjs'
       - 'growth-desk/tests/sprint.test.mjs'
       - 'growth-desk/tests/sprint.e2e.spec.mjs'
       - 'growth-desk/index.html'
@@ -23,9 +25,11 @@ jobs:
         run: |
           node --check growth-desk/sprint.mjs
           node --check growth-desk/sprint-app.mjs
+          node --check growth-desk/mission.mjs
       - name: Pure business workflow tests
         run: |
           node --test growth-desk/tests/sprint.test.mjs
+          node --test growth-desk/tests/mission.test.mjs
           node --test growth-desk/tests/core.test.mjs
           node --test neighbor-weave/tests/core.test.mjs
       - name: Full public-site regression
