@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {newSprint,loadStarterAtlas,reviewCandidate,logManualContact} from "../sprint.mjs";
 import {missionBrief,missionReceipt,makeNebulaHandoff,formatNebulaPrompt,
-  inspectNebulaReturn,HANDOFF_SCHEMA,RETURN_SCHEMA} from "../mission.mjs";
+  inspectNebulaReturn,HANDOFF_SCHEMA,RETURN_SCHEMA,makeConnectReviewBundle} from "../mission.mjs";
 const make=()=>loadStarterAtlas(newSprint()).state;
 const today="2026-11-23";
 const response=(p)=>({schema:RETURN_SCHEMA,packet_id:p.packet_id,
@@ -134,4 +134,16 @@ test("a returned packet with altered observed evidence is not accepted as genuin
  forged.candidates[0].candidate.source.observed="They definitely need outside cleaners.";
  assert.throws(()=>inspectNebulaReturn(s,forged,response(forged)),
    /STALE_OR_ALTERED_HANDOFF/);
+});
+
+test("one-file Connect bundle carries matching source and handoff revisions with zero rights",()=>{
+  const s=make(),b=makeConnectReviewBundle(s,today,"waseca-realty");
+  assert.equal(b.schema,"willowlab.growth-connect-bundle/v1");
+  assert.equal(b.state,"DRAFT_NOT_TRANSFERRED");
+  assert.equal(b.sprint_export.generated_from_revision,b.handoff.source.revision);
+  assert.equal(b.sprint_export.candidates.length,4);
+  assert.equal(b.handoff.candidates.length,1);
+  assert.equal(b.permissions.external_outreach,false);
+  assert.equal(b.permissions.wms_sync,false);
+  assert.equal(b.destination,"CONNECT_OWNER_REVIEW_ONLY_NOT_LIVE_SYNC");
 });
