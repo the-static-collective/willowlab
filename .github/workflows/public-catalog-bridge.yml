@@ -1,0 +1,23 @@
+name: WillowConnect public-catalog bridge review checks
+on:
+  push:
+    branches: [integration/willowconnect-public-catalog-001]
+  pull_request:
+    paths:
+      - 'catalog-bridge/**'
+      - 'functions/api/willow-catalog.js'
+      - '.github/workflows/public-catalog-bridge.yml'
+permissions:
+  contents: read
+jobs:
+  read_only_checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --check catalog-bridge/core.mjs
+      - run: node --check catalog-bridge/app.mjs
+      - run: node --test catalog-bridge/tests/core.test.mjs
+      - run: python3 tests/check_static.py
