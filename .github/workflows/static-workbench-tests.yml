@@ -3,6 +3,7 @@ on:
   pull_request:
     paths:
       - 'workbench/**'
+      - 'functions/**'
       - '.github/workflows/static-workbench-tests.yml'
   push:
     paths:
