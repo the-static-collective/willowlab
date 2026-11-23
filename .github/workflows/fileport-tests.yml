@@ -1,0 +1,28 @@
+name: FILEPORT-001 tests
+on:
+  pull_request:
+    paths:
+      - "fileport/**"
+      - "functions/api/fileport/**"
+      - "functions/_lib/fileport.js"
+      - "package.json"
+      - ".github/workflows/fileport-tests.yml"
+  push:
+    branches:
+      - "feature/static-fileport-neon-001"
+    paths:
+      - "fileport/**"
+      - "functions/api/fileport/**"
+      - "functions/_lib/fileport.js"
+      - "package.json"
+      - ".github/workflows/fileport-tests.yml"
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm install --no-audit --no-fund
+      - run: npm run test:fileport
