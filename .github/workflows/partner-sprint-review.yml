@@ -1,0 +1,34 @@
+name: Willow Partner Sprint 002 review checks
+on:
+  push:
+    branches: [feature/willow-partner-sprint-002]
+  pull_request:
+    paths:
+      - 'growth-desk/sprint*'
+      - 'growth-desk/tests/sprint.test.mjs'
+      - 'growth-desk/index.html'
+      - '.github/workflows/partner-sprint-review.yml'
+permissions:
+  contents: read
+jobs:
+  sprint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: JS checks
+        run: |
+          node --check growth-desk/sprint.mjs
+          node --check growth-desk/sprint-app.mjs
+      - name: Pure business workflow tests
+        run: |
+          node --test growth-desk/tests/sprint.test.mjs
+          node --test growth-desk/tests/core.test.mjs
+          node --test neighbor-weave/tests/core.test.mjs
+      - name: Full public-site regression
+        run: |
+          python3 tests/check_static.py
+          test -f growth-desk/sprint.html
+          test -f growth-desk/sprint.css
