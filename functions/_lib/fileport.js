@@ -1,6 +1,7 @@
 
 import { neon } from "@neondatabase/serverless";
-import { AwsClient } from "aws4fetch";
+import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 const SECURITY_HEADERS = {
   "Cache-Control": "no-store, private",
@@ -28,20 +29,40 @@ async function tokenDigest(token) {
   return [...new Uint8Array(digest)].map(x => x.toString(16).padStart(2, "0")).join("");
 }
 
-function storageURL(env, objectKey) {
+function storageObject(env, objectKey) {
   if (!env.S3_ENDPOINT || !env.S3_BUCKET || !/^[a-z0-9][a-z0-9.-]{1,253}$/.test(env.S3_BUCKET)) {
     throw new Error("Storage configuration unavailable");
   }
-  if (typeof objectKey !== "string" || !/^willowlab\/[A-Za-z0-9._/-]+$/.test(objectKey) ||
+  if (typeof objectKey !== "string" || !/^willowlab\\/[A-Za-z0-9._/-]+$/.test(objectKey) ||
       objectKey.split("/").some(segment => !segment || segment === "." || segment === "..")) {
     throw new Error("Unsafe object key");
   }
   const endpoint = new URL(env.S3_ENDPOINT);
-  if (endpoint.protocol !== "https:" || endpoint.username || endpoint.password || endpoint.pathname !== "/") {
+  if (endpoint.protocol !== "https:" || endpoint.username || endpoint.password ||
+      endpoint.pathname !== "/" || endpoint.search || endpoint.hash) {
     throw new Error("Unsafe storage endpoint");
   }
-  const key = objectKey.split("/").map(encodeURIComponent).join("/");
-  return endpoint.origin + "/" + encodeURIComponent(env.S3_BUCKET) + "/" + key + "?X-Amz-Expires=120";
+  return { endpoint: endpoint.origin, bucket: env.S3_BUCKET, key: objectKey };
+}
+
+// Neon's documented S3-compatible presigner, using path-style URLs.
+// Access remains gated by the Fileport share/file checks above this call.
+export async function signDownloadURL(env, objectKey) {
+  const { endpoint, bucket, key } = storageObject(env, objectKey);
+  if (!env.S3_ACCESS_KEY_ID || !env.S3_SECRET_ACCESS_KEY) {
+    throw new Error("Storage credentials unavailable");
+  }
+  const client = new S3Client({
+    region: env.S3_REGION || "us-east-1",
+    endpoint,
+    forcePathStyle: true,
+    requestChecksumCalculation: "WHEN_REQUIRED",
+    credentials: {
+      accessKeyId: env.S3_ACCESS_KEY_ID,
+      secretAccessKey: env.S3_SECRET_ACCESS_KEY
+    }
+  });
+  return getSignedUrl(client, new GetObjectCommand({ Bucket: bucket, Key: key }), { expiresIn: 120 });
 }
 
 export async function handleFileportRequest(request, env, action) {
@@ -103,18 +124,10 @@ export async function handleFileportRequest(request, env, action) {
         AND f.id = ${payload.fileId}
         AND f.state = 'approved' LIMIT 1`;
     if (!files.length) return json({ error: "File not found" }, 404);
-    const client = new AwsClient({
-      accessKeyId: env.S3_ACCESS_KEY_ID,
-      secretAccessKey: env.S3_SECRET_ACCESS_KEY,
-      service: "s3",
-      region: env.S3_REGION || "us-east-1"
-    });
-    const signed = await client.sign(storageURL(env, files[0].object_key), {
-      method: "GET", aws: { signQuery: true }
-    });
+    const signed = await signDownloadURL(env, files[0].object_key);
     await sql`INSERT INTO public.fileport_receipts (share_id, file_id, action)
       VALUES (${share.id}, ${files[0].id}, 'download_issued')`;
-    return json({ url: signed.url, expiresInSeconds: 120 });
+    return json({ url: signed, expiresInSeconds: 120 });
   } catch {
     // Don't return database, credential, token or object key details to visitors.
     return json({ error: "Fileport temporarily unavailable" }, 503);
