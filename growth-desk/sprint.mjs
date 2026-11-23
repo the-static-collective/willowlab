@@ -12,7 +12,7 @@ const CATEGORY=new Set(["property-management","residential-realty","commercial-r
 const REVIEW=new Set(["HOLD","SHORTLIST","DECLINE"]);
 const CHANNEL=new Set(["email","phone","in-person","other"]);
 const ID=/^[a-z0-9]+(?:-[a-z0-9]+)*$/;
-const COMMAND_ID=/^[A-Za-z0-9_-]{8,100}$/;
+const COMMAND_ID=/^[A-Za-z0-9_-]{1,100}$/;
 const email=/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i;
 const phone=/(?:\+?1[-. ]?)?\(?[2-9]\d{2}\)?[-. ]?[2-9]\d{2}[-. ]?\d{4}/;
 const reject=(message)=>{throw new Error(message);};
