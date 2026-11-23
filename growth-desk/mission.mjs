@@ -134,7 +134,18 @@ export function formatNebulaPrompt(packet){
     "Proposed question/action: "+m.proposed_action,
     "No partner, marketing consent, provider delivery or customer identity established.",""
   );
-  lines.push("Report unresolved source gaps and any existing owning WMS item by its exact ID. If no current owner authorization is located, explicitly HOLD and explain the smallest decision Colton must make.");
+  const returnTemplate={schema:RETURN_SCHEMA,packet_id:packet.packet_id,
+    source_revision:packet.source.revision,
+    claimed_effects:{wms_write:false,outreach_sent:false,owner_approval:false},
+    annotations:packet.candidates.map(m=>({
+      candidate_id:m.candidate.id,state:"NEEDS_SOURCE_CHECK",
+      question:m.candidate.falsifier,
+      notes:"No independently verified decision yet. Source and governing WMS owner record must be checked."
+    }))};
+  lines.push("Report unresolved source gaps and any existing owning WMS item by its exact ID. If no current owner authorization is located, explicitly HOLD and explain the smallest decision Colton must make.",
+    "",
+    "Optional: return the following JSON shape (one annotation per candidate) so this local preview can inspect it. Treat every note as unverified; do not claim Colton approved anything, that a message was sent, or that governing Docs were edited:",
+    JSON.stringify(returnTemplate,null,2));
   return lines.join("\n");
 }
 function assertHandoff(packet){
@@ -162,8 +173,8 @@ export function inspectNebulaReturn(sprint,packet,reply){
   assertHandoff(packet);
   if(packet.packet_id!==mine.packet_id||
     packet.source.revision!==mine.source.revision||
-    JSON.stringify(packet.candidates.map(x=>x.candidate.id))!==
-    JSON.stringify(mine.candidates.map(x=>x.candidate.id)))error("STALE_OR_ALTERED_HANDOFF");
+    JSON.stringify(packet.candidates)!==JSON.stringify(mine.candidates))
+    error("STALE_OR_ALTERED_HANDOFF");
   if(!reply||reply.schema!==RETURN_SCHEMA||reply.packet_id!==packet.packet_id||
     reply.source_revision!==packet.source.revision||
     reply.claimed_effects?.wms_write!==false||
