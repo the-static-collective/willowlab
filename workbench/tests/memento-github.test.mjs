@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {handleMementoRequest,readMementoSource} from "../../functions/_lib/memento-bridge.mjs";
+import {handleMementoRequest,readMementoSource} from "../../functions/api/memento.js";
 
 const A="a".repeat(40),B="b".repeat(40),C="c".repeat(40),D="d".repeat(40),E="e".repeat(40);
 const BASE="https://api.github.com/repos/the-static-collective/MEMENTO";
@@ -166,7 +166,7 @@ test("no endpoint permits writes",async()=>{
 });
 test("the source traversal method never directly writes to an external provider",async()=>{
   const github=mockGitHub();
-  const index=await readMementoSource({mode:"worlds"},env(),github.mock);
+  const index=await readMementoSource({mode:"worlds"},{gh:env().MEMENTO_GITHUB_TOKEN},github.mock);
   assert.equal(index.provenance.commit_sha,A);
   assert.ok(github.seen.every(r=>r.method==="GET"));
   assert.ok(github.seen.every(r=>r.url.startsWith(BASE)));
