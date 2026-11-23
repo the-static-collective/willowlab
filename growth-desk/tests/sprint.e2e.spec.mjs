@@ -90,5 +90,14 @@ test("Willow Partner Sprint runs source-to-review-to-draft-to-followup in browse
   await expect(page.locator("#nebula-return")).toContainText("NEEDS_OWNER_DECISION");
   await expect(page.locator("#nebula-status")).toContainText("Zero Sprint, WMS");
   await expect(page.locator("#metric-total")).toHaveText("4");
+  const [connectBundleDownload]=await Promise.all([
+    page.waitForEvent("download"),
+    page.getByRole("button",{name:"Export single-file Connect review bundle"}).click()
+  ]);
+  const combined=JSON.parse(await readFile(await connectBundleDownload.path(),"utf8"));
+  expect(combined.schema).toBe("willowlab.growth-connect-bundle/v1");
+  expect(combined.sprint_export.generated_from_revision).toBe(combined.handoff.source.revision);
+  expect(combined.permissions.customer_import).toBe(false);
+  expect(combined.permissions.external_outreach).toBe(false);
   expect(outgoing).toEqual([]);
 });
