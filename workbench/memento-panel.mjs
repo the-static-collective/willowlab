@@ -1,4 +1,5 @@
-// Local-only MEMENTO import panel. No network calls, storage, or MEMENTO writes.
+// Optional same-origin Access-verified MEMENTO lookup + local JSON/specimen inspection.
+// Private MEMENTO tokens remain server-side. No browser secrets, storage, or MEMENTO writes.
 import {readMementoArtifact,createWorkbenchQuestion,fictionalMementoSpecimen,MAX_ARTIFACT_BYTES} from "./memento.mjs";
 export function installMementoPanel({getHomeId,onCapture}){
   const input=document.getElementById("memento-file");
@@ -7,7 +8,12 @@ export function installMementoPanel({getHomeId,onCapture}){
   const capture=document.getElementById("memento-capture");
   const clear=document.getElementById("memento-clear");
   const sample=document.getElementById("memento-sample");
-  let active=null,attachedHome=null;
+  const listButton=document.getElementById("memento-list-worlds");
+  const worldSelect=document.getElementById("memento-world");
+  const depthSelect=document.getElementById("memento-depth");
+  const readButton=document.getElementById("memento-read-world");
+  const liveStatus=document.getElementById("memento-live-status");
+  let active=null,attachedHome=null,pinnedIndex=null,sourceHome=null,pendingHome=null,sourcePointer=null,epoch=0;
   const node=(tag,className,text)=>{
     const e=document.createElement(tag);
     if(className)e.className=className;
@@ -15,7 +21,11 @@ export function installMementoPanel({getHomeId,onCapture}){
     return e;
   };
   const reset=(message="No artifact imported.")=>{
-    active=null;attachedHome=null;input.value="";preview.replaceChildren();
+    epoch++;
+    active=null;attachedHome=null;pinnedIndex=null;sourceHome=null;pendingHome=null;sourcePointer=null;
+    input.value="";preview.replaceChildren();
+    worldSelect.replaceChildren(node("option","", "Sign in and list worlds first"));
+    worldSelect.disabled=true;readButton.disabled=true;
     status.textContent=message;capture.disabled=true;clear.hidden=true;
   };
   function show(artifact){
@@ -50,8 +60,92 @@ export function installMementoPanel({getHomeId,onCapture}){
       preview.append(node("p","memento-meta","Next probe: "+artifact.next_probe.action+
         " · consent: "+artifact.next_probe.consent));
     }
+    if(sourcePointer){
+      preview.append(node("p","memento-source",
+        "Source-pinned GitHub read · MEMENTO @ "+sourcePointer.commit_sha.slice(0,12)+
+        " · observed "+sourcePointer.observed_at+" · admission: none"));
+    }
     preview.append(node("p","memento-meta",artifact.notice));
   }
+  // Authenticated endpoint must be same-origin and must pass server-side JWT verification.
+  async function readApi(query){
+    const response=await fetch("../api/memento?"+query.toString(),{
+      method:"GET",credentials:"same-origin",cache:"no-store",redirect:"manual",
+      headers:{"Accept":"application/json"}
+    });
+    if(!response.ok||!response.headers.get("content-type")?.includes("application/json")){
+      let code="ACCESS_REQUIRED";
+      if(response.headers.get("content-type")?.includes("application/json")){
+        const body=await response.json().catch(()=>({}));
+        code=String(body.error||"UNAVAILABLE");
+      }
+      throw new Error(code+" ("+response.status+"). Use the Access sign-in link, or have the bridge configured.");
+    }
+    return response.json();
+  }
+  listButton.addEventListener("click",async()=>{
+    reset("Requesting a source index through the private endpoint…");
+    const home=getHomeId(),requestId=++epoch;
+    pendingHome=home;
+    liveStatus.textContent="Checking Cloudflare Access and pinned MEMENTO Git revision…";
+    listButton.disabled=true;
+    try{
+      const index=await readApi(new URLSearchParams({mode:"worlds"}));
+      if(epoch!==requestId||home!==getHomeId())return;
+      if(index?.schema!=="static.memento-source-index/0.1"||
+        index.admission!=="none"||
+        index.provenance?.repository!=="the-static-collective/MEMENTO"||
+        !/^[a-f0-9]{40}$/i.test(index.provenance?.commit_sha||"")||
+        !Array.isArray(index.worlds)||index.worlds.length>64)throw Error("Unexpected source index");
+      pinnedIndex=index;sourceHome=home;pendingHome=null;
+      worldSelect.replaceChildren();
+      for(const w of index.worlds){
+        if(typeof w.id!=="string"||!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(w.id)||
+          typeof w.title!=="string")throw Error("Unexpected world metadata");
+        const option=node("option","",w.title+" ["+w.id+"]");option.value=w.id;
+        worldSelect.append(option);
+      }
+      worldSelect.disabled=!index.worlds.length;
+      readButton.disabled=!index.worlds.length;
+      liveStatus.textContent=index.worlds.length+" worlds available at pinned commit "+
+        index.provenance.commit_sha.slice(0,12)+". Private data not copied to the repository.";
+      status.textContent="Choose a world and explicitly read its context.";
+    }catch(error){
+      if(epoch!==requestId)return;
+      reset("Private source index unavailable; local import and fictional specimen still work.");
+      liveStatus.textContent=error.message;
+    }finally{listButton.disabled=false;}
+  });
+  readButton.addEventListener("click",async()=>{
+    if(!pinnedIndex||sourceHome!==getHomeId())return;
+    const pinned=pinnedIndex.provenance.commit_sha;
+    const target=worldSelect.value;
+    if(!target)return;
+    const home=getHomeId(),requestId=++epoch;
+    pendingHome=home;readButton.disabled=true;
+    liveStatus.textContent="Reading only scoped metadata at "+pinned.slice(0,12)+"…";
+    try{
+      const response=await readApi(new URLSearchParams({
+        mode:"context",world:target,depth:depthSelect.value,sha:pinned
+      }));
+      if(epoch!==requestId||home!==getHomeId())return;
+      if(response?.provenance?.commit_sha!==pinned||
+        response?.provenance?.repository!=="the-static-collective/MEMENTO")
+        throw Error("Pinned source changed: refusing to display");
+      const view=readMementoArtifact(response);
+      active=view;attachedHome=home;sourcePointer=response.provenance;pendingHome=null;
+      show(view);capture.disabled=false;clear.hidden=false;
+      status.textContent="Authenticated, pinned GitHub read. Nothing admitted or saved.";
+      liveStatus.textContent="Source read: "+pinned.slice(0,12)+
+        ". Capture a question only if you want its title in your local demo and copied handoff.";
+    }catch(error){
+      if(epoch!==requestId)return;
+      active=null;attachedHome=null;sourcePointer=null;capture.disabled=true;
+      preview.replaceChildren();
+      liveStatus.textContent=error.message;
+      status.textContent="No private source accepted.";
+    }finally{readButton.disabled=worldSelect.disabled||!pinnedIndex;}
+  });
   input.addEventListener("change",async()=>{
     const file=input.files?.[0],home=getHomeId();
     reset("Reading selected local artifact…");
@@ -84,6 +178,11 @@ export function installMementoPanel({getHomeId,onCapture}){
   });
   clear.addEventListener("click",()=>reset());
   return {updateHome(){
-    if(active&&attachedHome!==getHomeId())reset("Home changed; source context cleared to avoid cross-home leakage.");
+    if((active&&attachedHome!==getHomeId())||
+      (pinnedIndex&&sourceHome!==getHomeId())||
+      (pendingHome&&pendingHome!==getHomeId())){
+      reset("Home changed; private context and pending requests were cleared.");
+      liveStatus.textContent="Source context cleared on home change. Reauthorize this lookup for another home.";
+    }
   }};
 }
