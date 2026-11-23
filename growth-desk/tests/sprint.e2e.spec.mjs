@@ -16,8 +16,7 @@ test("Willow Partner Sprint runs source-to-review-to-draft-to-followup in browse
   await page.getByRole("button",{name:"Save review note"}).click();
   await expect(page.locator("#metric-review")).toHaveText("1");
   await page.getByRole("button",{name:"Write an introduction"}).click();
-  await expect(page.locator("#draft-output")).toContainText("Lloyd Management");
-  await expect(page.locator("#draft-output")).toContainText("DRAFT").catch(()=>{});
+  await expect(page.locator("#draft-output")).toHaveValue(/Lloyd Management/);
   await expect(page.locator("#draft-status")).toContainText("unsent");
 
   // A self-reported contact requires both independent human attestations.
