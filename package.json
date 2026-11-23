@@ -1,0 +1,13 @@
+{
+  "name": "willowlab-review",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:fileport": "node --test fileport/tests/*.test.mjs"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.0",
+    "aws4fetch": "^1.0.5",
+    "pg": "^8.13.0"
+  }
+}
