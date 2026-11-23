@@ -1,0 +1,22 @@
+name: Neighbor Weave 0.2.1 local-only pilot checks
+on:
+  push:
+    branches: [experiment/static-seed-neighbor-weave-021]
+  pull_request:
+    paths:
+      - 'neighbor-weave/**'
+      - '.github/workflows/neighbor-weave-review.yml'
+permissions:
+  contents: read
+jobs:
+  pure_tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --check neighbor-weave/core.mjs
+      - run: node --check neighbor-weave/app.mjs
+      - run: node --test neighbor-weave/tests/core.test.mjs
+      - run: python3 tests/check_static.py
