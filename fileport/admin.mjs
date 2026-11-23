@@ -3,7 +3,8 @@
 import { readFile, stat } from "node:fs/promises";
 import { basename } from "node:path";
 import { randomBytes, randomUUID, createHash } from "node:crypto";
-import { Client } from "pg";
+import pg from "pg";
+const { Client } = pg;
 import { AwsClient } from "aws4fetch";
 
 const [action, ...args] = process.argv.slice(2);
