@@ -16,12 +16,12 @@ const email=/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i;
 const phone=/(?:\+?1[-. ]?)?\(?[2-9]\d{2}\)?[-. ]?[2-9]\d{2}[-. ]?\d{4}/;
 const reject=(message)=>{throw new Error(message);};
 const isPublicText=(x,max=500)=>typeof x==="string"&&x.trim().length>0&&x.length<=max&&
-  !/[\x00-\x1f]/.test(x)&&!email.test(x)&&!phone.test(x);
+  !/[\x00-\x08\x0b\x0c\x0e-\x1f]/.test(x)&&!email.test(x)&&!phone.test(x);
 const clean=(x)=>x.trim();
 const date=(x)=>typeof x==="string"&&/^\d{4}-\d{2}-\d{2}$/.test(x)&&
   !Number.isNaN(Date.parse(x))&&new Date(x+"T12:00:00Z").toISOString().slice(0,10)===x;
 function url(value){
-  if(!isPublicText(value,600))reject("INVALID_PUBLIC_URL");
+  if(!isPublicText(value,600)||/\s/.test(value))reject("INVALID_PUBLIC_URL");
   let u;
   try{u=new URL(value);}catch{reject("INVALID_PUBLIC_URL");}
   if(u.protocol!=="https:"||u.username||u.password||u.hash)reject("INVALID_PUBLIC_URL");
@@ -135,7 +135,7 @@ function target(next,id){
 export function reviewCandidate(state,command){
   return perform(state,{...command,type:"REVIEW"},(next,cmd)=>{
     const c=target(next,cmd.id);
-    if(!REVIEW.has(cmd.review)||!isPublicText(cmd.reason,300))reject("INVALID_REVIEW");
+    if(!REVIEW.has(cmd.review)||!isPublicText(cmd.reason,300)||\n      (c.manual_contact&&cmd.review!=="SHORTLIST"))reject("INVALID_REVIEW");
     c.review=cmd.review;c.review_reason=clean(cmd.reason);
     return {candidate_id:cmd.id,result:cmd.review};
   });
@@ -216,6 +216,8 @@ function strictImport(value){
   if(!value||value.schema!==EXPORT_SCHEMA||value.mode!=="UNVERIFIED_LOCAL_OPERATOR_NOTEBOOK"||
     value.permissions?.automatic_outreach!==false||
     value.permissions?.crm_import!==false||
+    value.permissions?.provider_send!==false||
+    !Number.isSafeInteger(value.generated_from_revision)||value.generated_from_revision<0||
     !Array.isArray(value.candidates)||value.candidates.length>80)reject("INVALID_SPRINT_IMPORT");
   const state=newSprint(),seenId=new Set(),seenUrl=new Set();
   for(const record of value.candidates){
@@ -231,7 +233,9 @@ function strictImport(value){
       const c=record.manual_contact;
       if(review!=="SHORTLIST"||!c||!CHANNEL.has(c.channel)||
         !date(c.occurred_on)||!date(c.followup_on)||
-        c.followup_on<c.occurred_on||!isPublicText(c.note,240)||
+        c.followup_on<c.occurred_on||
+        (Date.parse(c.followup_on+"T12:00:00Z")-Date.parse(c.occurred_on+"T12:00:00Z"))>90*86400000||
+        !isPublicText(c.note,240)||
         c.evidence!=="OPERATOR_SELF_REPORT_UNVERIFIED"||
         c.owner_approval!=="OPERATOR_ATTESTED_NOT_INDEPENDENTLY_VERIFIED"||
         !["OPEN","DONE","HOLD","CLOSED"].includes(record.followup_state))reject("INVALID_SPRINT_IMPORT");
