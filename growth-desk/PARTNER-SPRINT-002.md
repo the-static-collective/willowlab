@@ -28,7 +28,9 @@ python3 -m http.server 8000
 # open http://localhost:8000/growth-desk/sprint.html
 ```
 
-Only a static HTTP server is required. No keys, external accounts, backend, API tokens, database or installs are involved. You can also click the Partner Sprint link from `/growth-desk/`.
+For a **one-click Windows trial**, download this branch as a ZIP, extract it, and double-click `RUN-WILLOW-PARTNER-SPRINT.cmd` in the extracted repository root. It starts a Python loopback HTTP server on port 8765, opens the Sprint page in the default browser, and stops when you press Ctrl+C in its server window. Python 3 must already be installed.
+
+Only a static HTTP server is required. No keys, external accounts, backend, API tokens, database or installs are involved beyond a local Python 3 runtime. You can also click the Partner Sprint link from `/growth-desk/`.
 
 ### Three-minute review walkthrough
 
