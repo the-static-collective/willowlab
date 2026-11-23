@@ -1,0 +1,31 @@
+name: Static Workbench and Willowlab checks
+on:
+  pull_request:
+    paths:
+      - 'workbench/**'
+      - 'functions/**'
+      - '_routes.json'
+      - '.github/workflows/static-workbench-tests.yml'
+  push:
+    paths:
+      - 'workbench/**'
+      - '.github/workflows/static-workbench-tests.yml'
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test clean-plan/tests/core.test.mjs workbench/tests/*.test.mjs
+      - run: python3 tests/check_static.py
+      - run: |
+          test -f workbench/index.html
+          test -f workbench/core.mjs
+          test -f workbench/style.css
+          test -f workbench/app.mjs
+          test -f functions/api/memento.js
+          test -f _routes.json
