@@ -27,7 +27,7 @@ Set these as secrets in the **Cloudflare Pages project**, for both the relevant 
 - `S3_ENDPOINT` — the branch-scoped HTTPS storage endpoint.
 - `S3_REGION` — `us-east-1`.
 - `S3_BUCKET` — `willowlab-private`.
-- `S3_ACCESS_KEY_ID` and `S3_SECRET_ACCESS_KEY` — scoped **read-only storage credentials** for the download Function.
+- `S3_ACCESS_KEY_ID` and `S3_SECRET_ACCESS_KEY` — scoped **storage:write credentials** (Neon requires write scope to mint presigned URLs); keep these strictly server-side and never expose the signing endpoint as a generic URL signer.
 
 For the **operator's machine only**, the upload utility requires `DATABASE_URL`, `S3_ENDPOINT`, `S3_REGION`, `S3_BUCKET`, and separate **storage:write** credentials. Never commit `.env`, token URLs or S3 keys. Create credentials via Neon credential management once deployment is approved.
 
