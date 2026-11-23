@@ -52,3 +52,9 @@ node --test growth-desk/tests/sprint.test.mjs
 ```
 
 The GitHub CI suite includes a Chromium browser flow through the Sprint board and manually returned Nebula note, plus separate WMS private adapter tests. These are test runs, not runtime authorization or a shared authenticated connection.
+
+## Updated one-file Connect handoff (Growth Inbox 004)
+
+The Mission Control section also has **Export single-file Connect review bundle**. It writes `willowlab.growth-connect-bundle/v1` containing a validated public-source `willowlab.partner-sprint-export/v1` and its matching `willowlab.nebula-handoff/v1`. The private WillowConnect source branch `proposal/growth-owner-inbox-004` includes an **owner-authenticated but default-disabled** `/growth-review/` interface that can unpack and validate this single file, then import research-only records into a private D1 proposal inbox **after Colton approves and deploys the exact native Connect release**.
+
+This remains a manual owner import, not an authorized browser-to-private-CRM bridge. A separate server-side bearer-token `GET /api/growth-review/queue` is designed for a future Nebula connector but is also disabled; no secret, runtime ChatGPT connector, actual correspondence or deployment exists.
