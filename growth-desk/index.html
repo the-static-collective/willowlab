@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#153e30">
+<meta name="description" content="Willow Growth Desk — independent, synthetic relationship and communications experiment.">
+<title>Willow Growth Desk | Review Prototype</title>
+<link rel="stylesheet" href="./styles.css">
+<script type="module" src="./app.mjs"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to workbench</a>
+<header class="masthead">
+  <div class="shell topbar">
+    <a class="breadcrumb" href="/">WillowLab <span aria-hidden="true">/</span> Growth Desk</a>
+    <span class="micro">PROPOSED · LOCAL-ONLY · NO MESSAGES SENT</span>
+  </div>
+  <div class="shell hero">
+    <div>
+      <p class="kicker">Willow / Growth Experiment 001</p>
+      <h1>Good work travels by <em>word of mouth.</em></h1>
+      <p>Find potential collaborators. Turn one verified Willow update into useful materials. Keep every introduction, permission, and external action under human control.</p>
+      <a href="#relationships" class="text-link">Explore the desk <span aria-hidden="true">↓</span></a>
+    </div>
+    <aside class="hero-aside">
+      <span class="small-overline">The boundary</span>
+      <p><strong>A prospect is not a partner.</strong> A draft is not a message. A consent checkbox in this demo is not real permission to email anyone.</p>
+      <div class="dotline" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    </aside>
+  </div>
+</header>
+<main id="main" class="shell">
+  <section class="snapshot" aria-label="Prototype status">
+    <div><strong id="lead-count">1</strong><span>Local research specimen</span></div>
+    <div><strong id="review-count">0</strong><span>Locally reviewed</span></div>
+    <div><strong>0</strong><span>External messages</span></div>
+    <div><strong>0</strong><span>CRM records modified</span></div>
+  </section>
+
+  <section class="section" id="relationships" aria-labelledby="relationship-title">
+    <div class="section-heading">
+      <div><p class="eyebrow">01 / Neighbor Weave</p><h2 id="relationship-title">Build the relationship, not a shadow database.</h2>
+        <p class="lede">Import only a small, public-research specimen from STATIC SEED. Candidates remain unconfirmed until someone independently checks the fit and gets consent to proceed.</p></div>
+      <label class="file-button" for="garden-file">Choose local research JSON
+        <input type="file" id="garden-file" accept=".json,application/json" aria-describedby="garden-note"></label>
+    </div>
+    <p class="fine" id="garden-note">The file is read in your browser, not uploaded. No real contact lists, customer files or private WillowConnect exports.</p>
+    <div class="split">
+      <div class="panel" aria-label="Candidate list">
+        <div class="panel-head"><h3>Possibilities</h3><button type="button" id="reset-demo" class="quiet">Reset fictional example</button></div>
+        <div id="candidate-list" class="candidates"></div>
+      </div>
+      <div class="panel" aria-label="Owner review">
+        <div class="panel-head"><h3>Review one possibility</h3><span class="stage" id="lead-stage">DISCOVERED</span></div>
+        <div id="candidate-detail" class="candidate-detail">Choose a candidate.</div>
+        <div class="rule"></div>
+        <div class="form-grid">
+          <div class="field">
+            <label for="review-decision">Local review note</label>
+            <select id="review-decision">
+              <option value="HOLD">HOLD — need more information</option>
+              <option value="SHORTLIST">SHORTLIST — worth asking Colton</option>
+              <option value="DECLINE">DECLINE — not a fit now</option>
+            </select>
+          </div>
+          <div class="field"><label for="review-reason">Why?</label>
+            <textarea id="review-reason" rows="2" maxlength="300" placeholder="Record the unanswered question or evidence."></textarea></div>
+        </div>
+        <button type="button" id="record-review" class="primary">Record local review</button>
+        <p class="fine" id="review-status" role="status" aria-live="polite">This does not create an approved WillowConnect partner.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="introductions" aria-labelledby="intro-title">
+    <div class="section-heading"><div><p class="eyebrow">02 / Human introduction</p><h2 id="intro-title">A good first message starts with a real reason.</h2>
+      <p class="lede">Build a personal conversation draft for the selected research candidate. No recipient details are collected and no outreach is sent.</p></div></div>
+    <div class="split">
+      <div class="panel inner">
+        <div class="field"><label for="intro-service">Willow service being considered</label><input id="intro-service" maxlength="160" value="move-in / move-out cleaning"></div>
+        <div class="field"><label for="intro-value">Potential value to the neighbor</label><textarea id="intro-value" rows="3" maxlength="340">If one of your projects needs cleaning, we could compare needs and availability for a possible trial.</textarea></div>
+        <div class="field"><label for="intro-question">The actual question</label><textarea id="intro-question" rows="2" maxlength="260">Would a short conversation about whether our services complement each other be useful?</textarea></div>
+        <div class="actions"><button id="make-intro" type="button" class="primary">Draft an introduction</button>
+          <button id="export-review" type="button" class="secondary">Export review packet</button></div>
+        <p class="fine" id="intro-status" role="status" aria-live="polite">No message drafted yet.</p>
+      </div>
+      <div class="panel inner">
+        <div class="panel-head"><h3>Unsent introduction</h3><button type="button" id="copy-intro" class="quiet">Copy draft</button></div>
+        <textarea id="intro-preview" rows="14" readonly aria-label="Personal introduction draft" placeholder="A proposed introduction will appear here."></textarea>
+        <p class="fine">Before sending anything, confirm the business, relevant contact person, source, message accuracy and contact appropriateness. Human one-to-one outreach and subscriber marketing are different workflows.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="field-bell" aria-labelledby="field-bell-title">
+    <div class="section-heading"><div><p class="eyebrow">03 / Field Bell transplanted</p><h2 id="field-bell-title">One Willow note. Four useful forms.</h2>
+      <p class="lede">The Cedar Crate drafting method, rewritten for a cleaning business. No produce, farm calendars, GrownBy endpoints or Cedar Crate customer data come along.</p></div></div>
+    <div class="split">
+      <div class="panel inner">
+        <div class="form-grid two">
+          <div class="field"><label for="note-week">Date of note</label><input id="note-week" type="date" required></div>
+          <div class="field"><label for="note-service">Service focus</label><input id="note-service" maxlength="160" value="Move-in / move-out cleaning"></div>
+        </div>
+        <div class="field"><label for="note-observation">A factual Willow observation</label><textarea id="note-observation" maxlength="600" rows="3">Transitions are easier when the cleaning scope and handoff details are agreed in advance.</textarea></div>
+        <div class="field"><label for="note-tip">One practical cleaning tip</label><textarea id="note-tip" maxlength="600" rows="2">Put first-day supplies and frequently needed items in clearly labeled boxes.</textarea></div>
+        <div class="field"><label for="note-availability">What the office says about availability</label><input id="note-availability" maxlength="300" value="Contact Willow to confirm available dates and service scope."></div>
+        <div class="form-grid two">
+          <div class="field"><label for="availability-status">Availability verification</label>
+            <select id="availability-status"><option value="UNKNOWN">Unknown — do not promise</option><option value="CONFIRM_WITH_OFFICE">Needs office confirmation</option><option value="OWNER_CONFIRMED">Owner-confirmed in this local demo</option></select></div>
+          <div class="field"><label for="note-url">Official action link</label><input id="note-url" type="url" value="https://cleanwithwillow.com" maxlength="500"></div>
+        </div>
+        <label class="tick"><input type="checkbox" id="note-checked"> <span>I have checked these facts for the purpose of this local preview.</span></label>
+        <button id="compose-update" type="button" class="primary">Create four drafts</button>
+        <p class="fine" id="note-status" role="status" aria-live="polite">Every output requires independent owner approval before publication.</p>
+        <div class="source-catalog">
+          <p><strong>Optional real Willow source</strong></p>
+          <p class="fine">Read only service labels from the reviewed WillowConnect public-catalog bridge if that separate integration is approved and installed. Does not fetch pricing or customer data.</p>
+          <button type="button" class="quiet" id="read-catalog">Check approved public service catalog</button>
+          <p class="fine" id="catalog-status" role="status">Not requested.</p>
+          <ul id="catalog-results" class="catalog-results"></ul>
+        </div>
+      </div>
+      <div class="panel inner">
+        <div class="panel-head"><h3>Publication drafts</h3><button type="button" id="copy-publication" class="quiet">Copy visible draft</button></div>
+        <div class="tabs" role="group" aria-label="Publication format">
+          <button type="button" data-format="email" class="selected">Email</button>
+          <button type="button" data-format="web">Website</button>
+          <button type="button" data-format="social">Social</button>
+          <button type="button" data-format="print">Print note</button>
+        </div>
+        <textarea id="publication-preview" readonly rows="21" aria-label="Current publication draft" placeholder="Create the drafts to review the formats."></textarea>
+        <p class="fine" id="publication-disclosure">Drafting is separate from sending, publishing, booking or provider authorization.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="commuter" aria-labelledby="commuter-title">
+    <div class="section-heading"><div><p class="eyebrow">04 / reLATTE correspondence laboratory</p><h2 id="commuter-title">Ask permission before touching the send button.</h2>
+      <p class="lede">The engine below simulates how a real owner-governed delivery system should decide. It performs no network requests, no contact synchronization and no sending.</p></div></div>
+    <div class="split">
+      <div class="panel inner">
+        <label for="gate-scenario">Test a fictional event</label>
+        <select id="gate-scenario">
+          <option value="unapproved">Owner hasn't approved the message</option>
+          <option value="unknown">Owner approved; subscriber permission unknown</option>
+          <option value="suppressed">Recipient unsubscribed after approval</option>
+          <option value="missing-destination">Destination not verified</option>
+          <option value="provider-down">Delivery provider unavailable</option>
+          <option value="eligible">All hypothetical checks pass</option>
+          <option value="duplicate">Retry an already-processed fictional event</option>
+          <option value="intro">One-to-one introduction, not a subscription campaign</option>
+        </select>
+        <button id="run-gate" type="button" class="primary">Run dry-run gate</button>
+        <p class="fine">Marketing consent and evidence are separate from normal customer transaction purposes. Neither a purchase nor an inquiry enrolls anyone in a campaign.</p>
+      </div>
+      <div class="panel inner">
+        <p class="eyebrow">Simulated disposition</p>
+        <h3 id="gate-result" class="gate-result">NOT RUN</h3>
+        <p id="gate-reason" role="status" aria-live="polite">Choose a scenario to inspect the corresponding hold or hypothetical eligibility decision.</p>
+        <dl class="gate-facts"><dt>External messages</dt><dd>0</dd><dt>CRM mutations</dt><dd>0</dd><dt>Delivery-provider receipt</dt><dd>None</dd></dl>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="shell footer">
+  <p>WILLOWLAB · Independent review prototype. Colton controls WillowConnect and his business decisions. All source-sensitive integrations remain off until separately authorized.</p>
+  <p><a href="/">Main concept site</a> · <a href="/neighbor-weave/">Original Neighbor Weave pilot</a></p>
+</footer>
+</body>
+</html>

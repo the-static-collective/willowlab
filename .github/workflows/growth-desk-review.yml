@@ -1,0 +1,34 @@
+name: Willow Growth Desk 001 preview checks
+on:
+  push:
+    branches: [feature/willow-growth-desk-001]
+  pull_request:
+    paths:
+      - 'growth-desk/**'
+      - 'neighbor-weave/core.mjs'
+      - '.github/workflows/growth-desk-review.yml'
+permissions:
+  contents: read
+jobs:
+  source_preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax
+        run: |
+          node --check growth-desk/core.mjs
+          node --check growth-desk/app.mjs
+          node --check neighbor-weave/core.mjs
+      - name: Behavior checks
+        run: |
+          node --test growth-desk/tests/core.test.mjs
+          node --test neighbor-weave/tests/core.test.mjs
+      - name: Static site checks
+        run: |
+          python3 tests/check_static.py
+          test -f growth-desk/index.html
+          test -f growth-desk/styles.css
+          test -f growth-desk/app.mjs
