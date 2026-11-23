@@ -135,7 +135,8 @@ function target(next,id){
 export function reviewCandidate(state,command){
   return perform(state,{...command,type:"REVIEW"},(next,cmd)=>{
     const c=target(next,cmd.id);
-    if(!REVIEW.has(cmd.review)||!isPublicText(cmd.reason,300)||\n      (c.manual_contact&&cmd.review!=="SHORTLIST"))reject("INVALID_REVIEW");
+    if(!REVIEW.has(cmd.review)||!isPublicText(cmd.reason,300)||
+      (c.manual_contact&&cmd.review!=="SHORTLIST"))reject("INVALID_REVIEW");
     c.review=cmd.review;c.review_reason=clean(cmd.reason);
     return {candidate_id:cmd.id,result:cmd.review};
   });
