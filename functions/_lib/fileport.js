@@ -33,7 +33,7 @@ function storageObject(env, objectKey) {
   if (!env.S3_ENDPOINT || !env.S3_BUCKET || !/^[a-z0-9][a-z0-9.-]{1,253}$/.test(env.S3_BUCKET)) {
     throw new Error("Storage configuration unavailable");
   }
-  if (typeof objectKey !== "string" || !/^willowlab\\/[A-Za-z0-9._/-]+$/.test(objectKey) ||
+  if (typeof objectKey !== "string" || !/^willowlab\/[A-Za-z0-9._/-]+$/.test(objectKey) ||
       objectKey.split("/").some(segment => !segment || segment === "." || segment === "..")) {
     throw new Error("Unsafe object key");
   }
