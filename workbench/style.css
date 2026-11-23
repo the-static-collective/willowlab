@@ -27,3 +27,11 @@ html{scroll-behavior:smooth}body{margin:0;background:var(--sand);color:var(--ink
 .memento-line{font-size:12px;padding:7px 0;overflow-wrap:anywhere;border-bottom:1px solid var(--line)}
 .memento-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
 .memento-disclaimer{font-size:11px;color:#6a7f71;margin:15px 0 0;line-height:1.6}
+
+.memento-private{border:1px solid #8cac9b;background:#edf3ea;border-radius:12px;padding:15px;margin:14px 0}
+.memento-private h3{font:20px/1.2 Georgia,serif;margin:0 0 8px}
+.memento-private label{display:block;font-size:12px;font-weight:700;margin:12px 0 4px}
+.memento-private a{display:block;margin:11px 0 5px;color:var(--green2);font-size:12px;text-underline-offset:3px}
+.memento-private .button{margin:5px 0;width:100%}
+.memento-divider{font-weight:800;color:#5a7567;letter-spacing:.12em;font-size:10px;margin:20px 0 0}
+.memento-source{font-size:11px;font-weight:700;color:#28695c;overflow-wrap:anywhere;background:#e4eee5;padding:9px;border-radius:8px}
