@@ -1,64 +1,31 @@
-# WillowLab ↔ WillowConnect public catalog seam — owner-review draft (23 November 2026)
+# WillowLab public catalog adapter — proposed owner review (November 2026)
 
-**State: draft PR only. No deployment, production migration, submission, owner approval, or live source read claimed.**
-Source: private `StealthFox13/WillowConnect` (`main` at `e59c20601793155375e374a1ad4a5899338b5123` when inspected).
-Consumer: independent public concept `the-static-collective/willowlab`.
-WillowConnect's native Sites projects remain the sole publishing authority for their applications.
+**Unmerged draft. Disabled by default. No release, deployment or owner authorization implied.**
 
-## What is actually reusable
+This optional experiment makes a one-way, read-only connection from the independent WillowLab concept site to WillowConnect's publicly designated *development* service catalog. WillowLab does not become a canonical source. It does not send inquiries or manage actual business operations.
 
-| WillowConnect source | Demonstration or potential consumer | Boundary |
-| --- | --- | --- |
-| `GET /api/pricebook/state` public projection (`wms-pricebook-public/1`) | WillowLab voluntary public service-name/category reader | Public service metadata only; no prices in this bridge, no owner values, no cross-origin browser credential |
-| Website `/api/c01/catalog` on the existing Website preview | Later owner-approved C-01 inquiry design alignment | It belongs to the original Website-origin relay; do not copy its synthetic submission grant into WillowLab |
-| `/practice-inquiry` → Connect receipt → Canopy review | Reference for WillowLab quote wizard and Clean Plan Card | Development synthetic flow; WillowLab wizard remains **unsent** |
-| Connect pricebook revisions and service IDs | Show catalog origin/revision in conceptual UI | Use exact source IDs, no guessed mapping to fictional Clean Plan IDs |
-| Canonical Job/Visit/Assignment, Crew clock, office review | Clean Plan Card lifecycle/role comparisons | Synthetic WMS contracts; no Crew access, no real scheduler, payment or payroll |
-| WillowLab STATIC WORKBENCH experimental branch | Later read-only project source cards | Not authorized to read private WMS through MEMENTO bridge or broad GitHub token |
-| WillowLab STATIC FILEPORT experimental branch | Later explicitly approved artifact handoffs | No customer media, documents or WMS archives; separate database and owner permissions |
-| STATIC SEED (House of Houses) | Independent business, story-world, publishing homes | Method/registry only until approved connector; no plugin data transfer by attaching a workbench |
+## Interface
 
-## Proposed bridge (this branch)
+- Same-origin WillowLab endpoint: `GET /api/willow-catalog`.
+- Upstream: a **fixed** WillowConnect public-development catalog URL. No caller-controlled remote URLs.
+- Cloudflare Pages server-side only; no upstream browser credentials or cross-origin browser access.
+- Strict projection: source catalog revision and active public service `id`, `name`, `category`, `method`, `unit`. Never pass rates, owner notes, extended upstream fields, customer, staff, booking, finance or source credentials.
+- Strict schema, no-store/noindex response, no redirects, short timeout, capped payload; unknown/malformed upstream payload fails closed.
+- No upstream fetch until an approved deployment has `WILLOW_CATALOG_READ_ENABLED=true` **and** the visitor actively clicks to read.
+- Standalone visitor demonstration: `/catalog-bridge/`. All text is rendered as text, not markup. Nothing is retained or submitted.
 
-- A new Cloudflare Pages route: **`GET /api/willow-catalog`**.
-- **Off by default.** Requires server variable `WILLOW_CATALOG_READ_ENABLED=true` set by the WillowLab operator **only after Colton explicitly approves**.
-- Fixed single upstream: `https://willow-connect-preview.stealthfox13.chatgpt.site/api/pricebook/state`.
-- GET only; redirect disallowed; 8-second timeout; JSON schema and public `can_edit:false` validated; fail closed on errors.
-- Responses are no-store, noindex, same-origin, sanitized to `id,name,category,method,unit` and `revision`. No price, private notes, finance, customer, source token, staff records, or upstream error detail.
-- Optional `/catalog-bridge/` browser page does not fetch until a user clicks. Uses `textContent`, not HTML injection.
-- No writes, sign-in, data retention, billing/booking actions, C-01 grant reuse, permission crossing, or external requests from tests.
-- This is **not** a production service-selection or quote flow. Do not connect the existing quote wizard or auto-enroll browser users.
+## Ownership and acceptance
 
-## Acceptance gates before configuration or merge
+1. Colton reviews and explicitly authorizes whether public-development service labels may be displayed on this independent site.
+2. Authorized reviewer confirms the exact upstream public projection, origin, schema and permission policy against current source and deployment. No private source records need to enter this public repository.
+3. Run `node --test catalog-bridge/tests/core.test.mjs` and existing static-site checks.
+4. Verify the Cloudflare Pages Function can bundle, then test *only in an approved review deployment* with the environment flag. Confirm denied/disabled, changed-contract, network failure, payload sanitization and mobile/desktop rendering.
+5. Do **not** infer business production acceptance, real estimate/booking, authentication, data migration, or permission from a successful development-preview read.
 
-1. Colton approves using the explicitly public development projection in the independent WillowLab concept, and chooses whether preview service metadata should appear.
-2. Reviewer verifies the upstream `/api/pricebook/state` public contract, current origin, schema, anonymous policy, and exact allowed fields. If changed, update and retest the allowlist; do not loosen authentication.
-3. CI/test: `node --test catalog-bridge/tests/core.test.mjs` plus existing root tests. Verify disabled returns 503 without upstream traffic, POST denied, unexpected fields removed, upstream errors fail closed.
-4. Cloudflare Pages preview builds the Function imports. Enable in a **review deployment** only, fetch with owner's consent, inspect network/payload, and verify no prices, credentials, or private data escape.
-5. Owner performs desktop/mobile checks and confirms text and labels do not imply real pricing/booking.
-6. Reconfirm no replacement of WillowConnect native Sites, no Willow source push and no business mutations.
+**Rollback:** Remove or disable the flag; no upstream request will occur. Revert the branch to remove the adapter. No business records are modified.
 
-Rollback: remove the Pages env variable or set false; endpoint immediately stops upstream fetches. Then revert the draft PR. No source database or external customer records were ever copied.
+## Independent companion projects
 
-## STATIC SEED version note
+The Clean Plan Card, STATIC WORKBENCH, FILEPORT and STATIC SEED work remain independent experiments. They do not receive private repository, operational, account or customer access through this adapter. Any future collaboration or asset transfer needs a distinct owner-reviewed contract and permission boundary.
 
-The user identifies **STATIC SEED v2.1** as current. At this review, the connected editable package `plugins_6b0346b88af08191b9f1043bf7f2c5f1` still reports **0.2.0**. Do not claim the current 2.1 implementation was reviewed or rewrite its package until its actual release/archive can be verified. The WillowLab catalog seam is independent of plugin version and requires no plugin privileges.
-
-## Future high-value owner-controlled work
-
-- After verified STATIC SEED v2.1 source: make one *Willow Business home* that indexes **pointers** to Colton-authorized public service version, agreed owner action list, and owner-approved project cards; never ingest real CRM/customer data.
-- Add a **Crossing Card** proposal model (proposed, owner-approved, rejected) for sharing conceptual improvements into WillowConnect's code review; no silent push/merge.
-- Use *Clean Plan Card* as a comparison harness against WMS C-01, Q10, Q11/Q15 with synthetic fixtures and documented mismatches; do not treat simulated states as accepted WMS operations.
-- Reassess Fileport separately for curated **non-customer** marketing assets if Colton opts in.
-
-## Source inspection references
-
-- [WillowConnect README](https://github.com/StealthFox13/WillowConnect/blob/main/README.md)
-- [WMS current handoff](https://github.com/StealthFox13/WillowConnect/blob/main/docs/handoff/CURRENT_STATE.md)
-- [WMS practice inquiry](https://github.com/StealthFox13/WillowConnect/blob/main/docs/handoff/C01_INQUIRY.md)
-- [WMS connected clock](https://github.com/StealthFox13/WillowConnect/blob/main/docs/handoff/Q11_Q15_CONNECTED_CLOCK.md)
-- [WillowLab independent prototype](https://github.com/the-static-collective/willowlab)
-- [WillowLab draft Workbench PR](https://github.com/the-static-collective/willowlab/pull/1)
-- [WillowLab draft Fileport PR](https://github.com/the-static-collective/willowlab/pull/2)
-
-**Private WillowConnect repo paths are references only; do not publish private source material in the public WillowLab repo.**
+**Do not publish source details, private documents or client information from another owner's private repository in WillowLab.**
