@@ -1,3 +1,4 @@
+import {readFile} from "node:fs/promises";
 import {test,expect} from "@playwright/test";
 
 test("Willow Partner Sprint runs source-to-review-to-draft-to-followup in browser",async ({page})=>{
@@ -53,6 +54,41 @@ test("Willow Partner Sprint runs source-to-review-to-draft-to-followup in browse
   await page.locator("#import-board").setInputFiles({
     name:"pilot.json",mimeType:"application/json",buffer:Buffer.from(stored)
   });
+  await expect(page.locator("#metric-total")).toHaveText("4");
+  // A source-backed Mission Control brief should be useful without network requests.
+  await page.getByRole("button",{name:"Brief me on next moves"}).click();
+  await expect(page.locator("#mission-brief")).toContainText("Lloyd Management");
+  await expect(page.locator("#mission-brief")).toContainText("Rule-based suggestions only");
+  await page.getByRole("button",{name:"Show selected reasoning receipt"}).click();
+  await expect(page.locator("#mission-brief")).toContainText("MOTIF_INSPIRED");
+  await expect(page.locator("#mission-brief")).toContainText("NOT_GRANTED");
+
+  // Nebula is a manual source review; no API/CRM/outreach network call.
+  await page.locator("#nebula-scope").selectOption("selected");
+  await page.getByRole("button",{name:"Prepare Nebula packet"}).click();
+  await expect(page.locator("#nebula-prompt")).toHaveValue(/WMS Master/);
+  await expect(page.locator("#nebula-prompt")).toHaveValue(/willowlab.nebula-review-return\/v1/);
+  const [nebulaDownload]=await Promise.all([
+    page.waitForEvent("download"),
+    page.getByRole("button",{name:"Export packet JSON"}).click()
+  ]);
+  const packet=JSON.parse(await readFile(await nebulaDownload.path(),"utf8"));
+  expect(packet.schema).toBe("willowlab.nebula-handoff/v1");
+  expect(packet.permissions.wms_sync).toBe(false);
+  expect(packet.permissions.provider_send).toBe(false);
+  const returnNote={schema:"willowlab.nebula-review-return/v1",packet_id:packet.packet_id,
+    source_revision:packet.source.revision,
+    claimed_effects:{wms_write:false,outreach_sent:false,owner_approval:false},
+    annotations:[{candidate_id:packet.candidates[0].candidate.id,
+      state:"NEEDS_OWNER_DECISION",
+      question:"Does Willow serve this property type?",
+      notes:"Human should compare current governing WMS policy and source."}]};
+  await page.locator("#nebula-return-file").setInputFiles({
+    name:"nebula-review.json",mimeType:"application/json",
+    buffer:Buffer.from(JSON.stringify(returnNote))
+  });
+  await expect(page.locator("#nebula-return")).toContainText("NEEDS_OWNER_DECISION");
+  await expect(page.locator("#nebula-status")).toContainText("Zero Sprint, WMS");
   await expect(page.locator("#metric-total")).toHaveText("4");
   expect(outgoing).toEqual([]);
 });
