@@ -4,6 +4,7 @@ on:
     paths:
       - 'workbench/**'
       - 'functions/**'
+      - '_routes.json'
       - '.github/workflows/static-workbench-tests.yml'
   push:
     paths:
@@ -26,3 +27,5 @@ jobs:
           test -f workbench/core.mjs
           test -f workbench/style.css
           test -f workbench/app.mjs
+          test -f functions/api/memento.js
+          test -f _routes.json
